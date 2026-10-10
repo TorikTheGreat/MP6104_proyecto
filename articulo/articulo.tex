@@ -1,0 +1,89 @@
+% Artículo del Proyecto 1: formato IEEE Transactions (A1, A2), máximo 4 páginas (A3).
+% Sigue la plantilla oficial de IEEE para Transactions y Journals
+% (IEEE-Transactions-LaTeX2e-templates-and-instructions.zip, IEEE Template
+% Selector, versión del 24/10/2025): bare_jrnl_new_sample4.tex y
+% New_IEEEtran_how-to.pdf. IEEEtran.cls en esta carpeta es la de esa plantilla.
+%
+% Reglas de la plantilla que aplican al texto:
+% - El primer párrafo de la introducción empieza con \IEEEPARstart.
+% - Figuras con [!t], \includegraphics antes de \caption y \label después
+%   de \caption.
+% - Tablas con \caption antes de la tabla y \label después. Las divisiones
+%   las fija el enunciado (A10, A11): solo horizontales, con booktabs.
+% - Ecuaciones numeradas con equation o align (no eqnarray ni $$), citadas con
+%   \eqref; sin fórmulas en el título ni en el resumen.
+% - Las referencias se citan con \cite, que el paquete cite ordena y agrupa.
+% La muestra oficial usa la opción 'lettersize', que su IEEEtran.cls no define
+% (la ignora con una advertencia); 'letterpaper' es la opción equivalente que sí existe.
+\documentclass[letterpaper,journal]{IEEEtran}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+% es-tabla: "Tabla" en lugar de "Cuadro" (A7); es-nodecimaldot: punto decimal.
+\usepackage[english,spanish,es-tabla,es-nodecimaldot]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{booktabs} % tablas sin divisiones verticales (A10, A11)
+\usepackage{siunitx}
+\usepackage[hidelinks]{hyperref}
+\usepackage{cleveref}
+
+\graphicspath{{../figuras/}}
+\sisetup{output-decimal-marker={.}, per-mode=symbol}
+\renewcommand{\IEEEkeywordsname}{Palabras clave}
+
+\begin{document}
+
+\title{Esteganografía de metadatos en audio mediante enmascaramiento con eco}
+
+\author{Marco Zolla Salazar % TODO: integrantes del equipo
+\thanks{Maestría en Electrónica, Instituto Tecnológico de Costa Rica.}}
+
+% Encabezados de página: revista (aquí, el curso) y autores: título.
+\markboth{MP6104 Procesamiento Digital de Señales, Proyecto 1, octubre~2026}%
+{Zolla Salazar \MakeLowercase{\textit{et al.}}: Esteganografía de metadatos en audio mediante enmascaramiento con eco}
+
+\maketitle
+
+% Dueño: C. A14: el resumen va en inglés. A15: debe permitir decidir si el artículo es útil.
+\begin{otherlanguage}{english}
+\begin{abstract}
+TODO.
+\end{abstract}
+\end{otherlanguage}
+
+% Dueño: C. A13: en orden alfabético. A16: representativas del contenido.
+\begin{IEEEkeywords}
+TODO.
+\end{IEEEkeywords}
+
+% Cada archivo de secciones/ tiene un solo dueño (anotado en su primera línea);
+% C, como editor, revisa el estilo y la forma (A4-A14).
+\section{Introducción}
+\input{secciones/introduccion}
+
+\section{Marco teórico}
+\input{secciones/marco_eco}
+\input{secciones/marco_cepstro}
+
+\section{Solución propuesta}
+\input{secciones/solucion_codificador}
+\input{secciones/solucion_decodificador}
+\input{secciones/solucion_metadatos}
+
+\section{Resultados}
+\input{secciones/resultados_calidad}
+\input{secciones/resultados_recuperacion}
+\input{secciones/resultados_correlaciones}
+
+\section{Conclusiones}
+\input{secciones/conclusiones_calidad}
+\input{secciones/conclusiones_recuperacion}
+\input{secciones/conclusiones_correlaciones}
+\input{secciones/recomendaciones}
+
+\bibliographystyle{IEEEtran}
+\bibliography{referencias}
+
+\end{document}

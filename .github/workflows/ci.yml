@@ -1,0 +1,21 @@
+# Compila y prueba la implementación en C++ y el prototipo en Python en cada
+# push y pull request.
+name: ci
+on: [push, pull_request]
+jobs:
+  cpp:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      # -Werror: el código debe compilar sin advertencias
+      - run: make CXXFLAGS="-O2 -Wall -Wextra -Wpedantic -Werror"
+      - run: make test CXXFLAGS="-O2 -Wall -Wextra -Wpedantic -Werror"
+  python:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r prototipo/requirements.txt
+      - run: make prototipo-test PY=python

@@ -1,0 +1,40 @@
+# ---- Compilación de C/C++ ----------------------------------------------
+build/
+bin/
+*.o
+*.d
+
+# ---- Entorno de Python -------------------------------------------------
+.venv/
+__pycache__/
+*.py[cod]
+
+# ---- Compilación de LaTeX ----------------------------------------------
+# El PDF final (articulo/articulo.pdf) SÍ se versiona: es parte de la entrega.
+articulo/build/
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+
+# ---- Audio -------------------------------------------------------------
+# Los fragmentos WAV de prueba (datos/*.wav) SÍ se versionan, con su licencia en
+# datos/README.md. Los originales descargados y los WAV codificados por los
+# experimentos se regeneran; solo se versiona un ejemplo codificado.
+datos/originales/
+resultados/*.wav
+!resultados/ejemplo_codificado.wav
+
+# ---- Sistema operativo / editores --------------------------------------
+.DS_Store
+*~
+*.swp
+.vscode/
+.idea/
+
+# ---- Material de consulta local (plantillas descargadas, etc.) -----------
+scratch/
