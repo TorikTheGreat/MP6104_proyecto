@@ -19,3 +19,5 @@ jobs:
           python-version: "3.12"
       - run: pip install -r prototipo/requirements.txt
       - run: make prototipo-test PY=python
+      # Los vectores versionados en tests/vectores/ coinciden con el prototipo
+      - run: python prototipo/vectores.py --verificar

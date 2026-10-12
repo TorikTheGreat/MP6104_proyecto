@@ -26,14 +26,26 @@
 //                                        prueba (por ejemplo, antes de indexar un
 //                                        vector cuyo tamaño no se cumplió).
 // Las tres primeras siguen después de un fallo, para ver todos de una vez.
+//
+// Vectores de referencia de prototipo/vectores.py (tests/vectores/<nombre>.txt):
+//   leer_reales(nombre), leer_complejos(nombre), leer_enteros(nombre),
+//   leer_textos(nombre)        valores ya convertidos; lanzan si el tipo no es
+//                              el de la cabecera o el archivo está mal formado.
+//   leer_lineas(nombre), desescapar(linea)
+//                              para formatos propios (las líneas sin convertir).
 
 #ifndef PRUEBAS_HPP
 #define PRUEBAS_HPP
 
+#include <cctype>
+#include <cerrno>
 #include <cmath>
 #include <complex>
 #include <cstddef>
+#include <cstdlib>
+#include <fstream>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <string_view>
 #include <type_traits>
@@ -177,6 +189,124 @@ bool cerca(const A& a, const B& b, const T& tol, std::string& detalle) {
       << " > " << tol;
     detalle = s.str();
     return dif <= static_cast<double>(tol);  // NaN da falso: falla
+}
+
+// ---- Vectores de referencia -------------------------------------------------
+//
+// Archivos tests/vectores/<nombre>.txt que escribe prototipo/vectores.py (el
+// formato está en su docstring). Las rutas son relativas a la raíz del
+// repositorio, desde donde corre make test. Un error de lectura lanza una
+// excepción, que principal.cpp reporta como fallo de la prueba.
+
+inline std::runtime_error error_vector(const std::string& nombre, std::size_t linea,
+                                       const std::string& mensaje) {
+    return std::runtime_error("tests/vectores/" + nombre + ".txt:" +
+                              std::to_string(linea) + ": " + mensaje);
+}
+
+// Líneas del vector sin la cabecera, tal como están en el archivo (sin
+// desescapar). Si tipo no es vacío, verifica que la cabecera diga tipo=<tipo>.
+inline std::vector<std::string> leer_lineas(const std::string& nombre,
+                                            const std::string& tipo = "") {
+    std::ifstream f("tests/vectores/" + nombre + ".txt", std::ios::binary);
+    if (!f)
+        throw error_vector(nombre, 0,
+                           "no se pudo abrir (¿se corrió desde la raíz del repositorio? "
+                           "¿falta make vectores?)");
+    std::string cabecera;
+    std::getline(f, cabecera);
+    if (cabecera.rfind("# ", 0) != 0) throw error_vector(nombre, 1, "falta la cabecera");
+    if (!tipo.empty()) {
+        const std::string sufijo = ", tipo=" + tipo;
+        if (cabecera.size() < sufijo.size() ||
+            cabecera.compare(cabecera.size() - sufijo.size(), sufijo.size(), sufijo) != 0)
+            throw error_vector(nombre, 1, "se esperaba tipo=" + tipo);
+    }
+    std::vector<std::string> lineas;
+    for (std::string l; std::getline(f, l);) lineas.push_back(l);
+    return lineas;
+}
+
+// Inversa del escape de prototipo/vectores.py: \\, \n y \xNN.
+inline std::string desescapar(const std::string& linea) {
+    std::string salida;
+    for (std::size_t i = 0; i < linea.size(); ++i) {
+        if (linea[i] != '\\') {
+            salida += linea[i];
+        } else if (i + 1 < linea.size() && linea[i + 1] == '\\') {
+            salida += '\\';
+            i += 1;
+        } else if (i + 1 < linea.size() && linea[i + 1] == 'n') {
+            salida += '\n';
+            i += 1;
+        } else if (i + 3 < linea.size() && linea[i + 1] == 'x' &&
+                   std::isxdigit(static_cast<unsigned char>(linea[i + 2])) &&
+                   std::isxdigit(static_cast<unsigned char>(linea[i + 3]))) {
+            salida += static_cast<char>(std::stoi(linea.substr(i + 2, 2), nullptr, 16));
+            i += 3;
+        } else {
+            throw std::runtime_error("escape inválido en «" + linea + "»");
+        }
+    }
+    return salida;
+}
+
+// Convierte un texto completo a double; falla si sobra algo.
+inline double a_real(const std::string& nombre, std::size_t linea, const std::string& s) {
+    char* fin = nullptr;  // sin revisar ERANGE: strtod lo marca también en subnormales
+    const double x = std::strtod(s.c_str(), &fin);
+    if (s.empty() || *fin != '\0')
+        throw error_vector(nombre, linea, "no es un real: «" + s + "»");
+    return x;
+}
+
+inline std::vector<double> leer_reales(const std::string& nombre) {
+    const auto lineas = leer_lineas(nombre, "real");
+    std::vector<double> v;
+    for (std::size_t i = 0; i < lineas.size(); ++i)
+        v.push_back(a_real(nombre, i + 2, lineas[i]));
+    return v;
+}
+
+inline std::vector<std::complex<double>> leer_complejos(const std::string& nombre) {
+    const auto lineas = leer_lineas(nombre, "complejo");
+    std::vector<std::complex<double>> v;
+    for (std::size_t i = 0; i < lineas.size(); ++i) {
+        const auto espacio = lineas[i].find(' ');
+        if (espacio == std::string::npos)
+            throw error_vector(nombre, i + 2, "se esperaba «re im»");
+        v.emplace_back(a_real(nombre, i + 2, lineas[i].substr(0, espacio)),
+                       a_real(nombre, i + 2, lineas[i].substr(espacio + 1)));
+    }
+    return v;
+}
+
+inline std::vector<long long> leer_enteros(const std::string& nombre) {
+    const auto lineas = leer_lineas(nombre, "entero");
+    std::vector<long long> v;
+    for (std::size_t i = 0; i < lineas.size(); ++i) {
+        errno = 0;
+        char* fin = nullptr;
+        const long long x = std::strtoll(lineas[i].c_str(), &fin, 10);
+        if (lineas[i].empty() || *fin != '\0' || errno == ERANGE)
+            throw error_vector(nombre, i + 2, "no es un entero: «" + lineas[i] + "»");
+        v.push_back(x);
+    }
+    return v;
+}
+
+// Cadenas como bytes (UTF-8 tal cual, con los bytes inválidos que hubiera).
+inline std::vector<std::string> leer_textos(const std::string& nombre) {
+    const auto lineas = leer_lineas(nombre, "texto");
+    std::vector<std::string> v;
+    for (std::size_t i = 0; i < lineas.size(); ++i) {
+        try {
+            v.push_back(desescapar(lineas[i]));
+        } catch (const std::runtime_error& e) {
+            throw error_vector(nombre, i + 2, e.what());
+        }
+    }
+    return v;
 }
 
 }  // namespace pruebas

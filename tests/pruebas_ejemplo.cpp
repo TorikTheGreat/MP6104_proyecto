@@ -3,6 +3,7 @@
 
 #include <complex>
 #include <cstdint>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -65,4 +66,55 @@ PRUEBA(infraestructura_registra_las_fallas) {
                                 std::string::npos;
     pruebas::fallos().resize(antes);
     VERIFICAR(registrada);
+}
+
+// ---- Vectores de referencia (prototipo/vectores_ejemplo.py) ---------------
+// Plantilla de comparación con el prototipo: se lee la entrada que usó Python,
+// se calcula lo mismo en C++ y se compara con la salida que guardó Python.
+
+PRUEBA(ejemplo_vectores_reales_y_complejos_igual_que_python) {
+    const auto x = pruebas::leer_reales("ejemplo_entrada");
+    const auto suma_python = pruebas::leer_reales("ejemplo_suma_acumulada");
+    const auto exp_python = pruebas::leer_complejos("ejemplo_exponencial");
+    REQUERIR(x.size() == 16 && suma_python.size() == 16 && exp_python.size() == 16);
+
+    double suma = 0.0;
+    for (std::size_t i = 0; i < x.size(); ++i) {
+        suma += x[i];
+        VERIFICAR_CERCA(suma, suma_python[i], 1e-12);
+        VERIFICAR_CERCA(std::polar(1.0, x[i]), exp_python[i], 1e-12);
+    }
+}
+
+PRUEBA(ejemplo_vectores_enteros_y_texto_exactos) {
+    VERIFICAR_IGUAL(pruebas::leer_enteros("ejemplo_enteros"),
+                    (std::vector<long long>{0, -1, 32767, -32768, 1099511627776LL}));
+    VERIFICAR_IGUAL(pruebas::leer_textos("ejemplo_texto"),
+                    (std::vector<std::string>{
+                        "Canción Ñandú",
+                        "",
+                        "salto\nde línea",
+                        "barra \\ invertida",
+                        "#almohadilla al inicio",
+                        "tab\tcontrol\x7f",
+                        "byte inv\xe1lido",
+                    }));
+}
+
+PRUEBA(infraestructura_lectores_rechazan_errores) {
+    std::string mensaje;
+    try {
+        pruebas::leer_reales("ejemplo_texto");  // tipo equivocado
+    } catch (const std::runtime_error& e) {
+        mensaje = e.what();
+    }
+    VERIFICAR(mensaje.find("se esperaba tipo=real") != std::string::npos);
+    bool lanzo = false;
+    try {
+        pruebas::desescapar("a\\qb");
+    } catch (const std::runtime_error&) {
+        lanzo = true;
+    }
+    VERIFICAR(lanzo);
+    VERIFICAR_IGUAL(pruebas::desescapar("\\x41\\\\\\n"), "A\\\n");
 }
