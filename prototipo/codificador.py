@@ -35,7 +35,6 @@ print("Muestras canal izquierdo:", len(izquierdo))
 print("Muestras canal derecho:", len(derecho))
 
 # Convertir a float64 para realizar las operaciones
-izquierdo_float = izquierdo.astype(np.float64)
 
 # Seleccionar el canal que se desea codificar
 canal = input("Seleccione el canal (I/D) [I]: ").strip().upper()
@@ -100,9 +99,14 @@ print("Longitud de h1:", len(h1))
 # 5. Definir la duración de cada ventana
 # --------------------------------------------------
 
-duracion_ventana = 0.05
-
-N_ventana = round(duracion_ventana * Fs)
+# K=25 es provisional: permite mantener ventanas cercanas a 50 ms
+# con los retardos de prueba. El decodificador debe usar el mismo K.
+K_ventana = int(input("Factor de ventana K (N=K*Dmax) [25]: ") or "25")
+if K_ventana < 2:
+    raise ValueError("K debe ser un entero mayor o igual a 2")
+N_ventana = K_ventana * max(D0, D1)
+if N_ventana > len(canal_original):
+    raise ValueError("La ventana supera la longitud del audio")
 
 if max(D0, D1) + 1 >= N_ventana:
     raise ValueError("Los retardos deben ser menores que la ventana")

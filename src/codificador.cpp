@@ -179,14 +179,24 @@ int main() {
             throw runtime_error("Retardos deben corresponder a muestras positivas y distintas");
         const double a0 = pct0 / 100.0, a1 = pct1 / 100.0;
         const size_t maxD = max(D0, D1);
-        const size_t ventana = static_cast<size_t>(llround(0.05 * audio.fs));
-        if (maxD + 1 >= ventana)
-            throw runtime_error("Retardo excesivo para ventana de 50 ms");
+        // K configurable: el tamano depende del mayor retardo (R33).
+        // K=25 es provisional: mantiene una duracion cercana a 50 ms
+        // para los retardos de prueba. Debe ajustarse con el decodificador.
+        double k_numero = pedir_numero("Factor de ventana K (N=K*Dmax)", "25");
+        if (k_numero < 2 || k_numero > 100000 || floor(k_numero) != k_numero)
+            throw runtime_error("K debe ser un entero entre 2 y 100000");
+        const size_t K = static_cast<size_t>(k_numero);
+        if (maxD > numeric_limits<size_t>::max() / K)
+            throw runtime_error("Tamano de ventana demasiado grande");
+        const size_t ventana = K * maxD;
+        if (ventana <= maxD || ventana > n)
+            throw runtime_error("La ventana debe ser mayor que Dmax y no exceder el audio");
         const size_t ventanas_disponibles = n / ventana;
         if (ventanas_disponibles == 0) throw runtime_error("Audio demasiado corto");
         cout << "Retardos: D0=" << D0 << " muestras; D1=" << D1 << " muestras\n";
         cout << "Atenuaciones: a0=" << a0 << "; a1=" << a1 << "\n";
-        cout << "Ventana: " << ventana << " muestras (50 ms)\n";
+        cout << "Ventana: " << ventana << " muestras ("
+             << (1000.0 * ventana / audio.fs) << " ms), K=" << K << "\n";
         cout << "Capacidad: " << ventanas_disponibles << " bits\n";
 
         string bits = pedir_texto("Mensaje binario", "101101");
