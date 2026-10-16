@@ -1,0 +1,6 @@
+# generado por prototipo/vectores_ejemplo.py, tipo=entero
+0
+-1
+32767
+-32768
+1099511627776
