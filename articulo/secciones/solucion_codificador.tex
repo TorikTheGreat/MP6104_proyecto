@@ -1,2 +1,33 @@
-% Dueño: A. A20: el codificador con detalle suficiente para reproducirlo. A12: diagramas, no código.
-TODO.
+\subsection{Codificador de eco}
+
+El codificador inserta informacion binaria en una senal de audio mediante
+la suma de ecos de baja amplitud. Se asigna un retardo diferente a cada
+simbolo: $D_0$ para el bit cero y $D_1$ para el bit uno. Para una ventana
+que contiene el bit $b$, el eco agregado corresponde a una copia
+atenuada y desplazada de sus muestras:
+\begin{equation}
+ e_b[n]=\begin{cases}
+ \alpha_b x[n-D_b], & n-D_b\text{ pertenece a la ventana},\\
+ 0, & \text{en otro caso}.
+ \end{cases}
+\end{equation}
+La senal resultante se obtiene sumando el audio original y las
+contribuciones de todas las ventanas: $y[n]=x[n]+\sum_b e_b[n]$,
+donde la suma se entiende sobre las ventanas que contienen los bits.
+
+Se desarrollo un prototipo en Python y una implementacion en C++17.
+El programa lee audio WAV estereo PCM16, permite elegir el canal de
+insercion, configurar los retardos y las atenuaciones, e introducir
+un mensaje binario. Las contribuciones desplazadas se acumulan mediante
+Overlap-Add y el canal no seleccionado conserva sus muestras originales.
+Al escribir el WAV se aplica saturacion al intervalo PCM16 y
+truncamiento hacia cero.
+
+En las pruebas se utilizo una frecuencia de muestreo de $44.1$ kHz,
+retardos de $1$ y $2$ ms (respectivamente $44$ y $88$ muestras), y
+una longitud de ventana $N=K\max(D_0,D_1)$ con $K=25$; por tanto,
+$N=2200$ muestras ($49.89$ ms). Este valor de $K$ es provisional
+hasta comprobar el desempeno del decodificador. Para el mensaje
+$101101$ y una atenuacion del por ciento en ambos retardos, las
+implementaciones Python y C++ produjeron archivos con cero
+diferencias entre las muestras PCM16 del canal codificado.
