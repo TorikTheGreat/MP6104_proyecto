@@ -3,7 +3,10 @@
 Curso **MP6104 — Procesamiento Digital de Señales**, Maestría en Electrónica,
 Instituto Tecnológico de Costa Rica, IV Cuatrimestre 2026.
 
-- **Integrantes:** Marco Zolla Salazar <!-- TODO: completar el equipo -->
+- **Integrantes:**
+  - Marco Zolla Salazar
+  - Por completar (rol A) <!-- TODO: cada integrante cambia solo su renglón -->
+  - Por completar (rol B)
 - **Profesor:** M.Sc. Carl Michael Grüner Monzón
 
 Sistema que esconde metadatos de una canción (título, artista, autor, álbum, año,
@@ -58,6 +61,52 @@ make venv          # entorno de Python para el prototipo y los experimentos
 make prototipo-test  # pruebas del prototipo en Python
 make help          # lista todos los objetivos
 ```
+
+## Pruebas
+
+```bash
+make test                  # C++: compila bin/pruebas y corre todo
+./bin/pruebas fft          # solo las pruebas con «fft» en el nombre
+make prototipo-test        # Python: prototipo/tests/test_*.py
+make vectores              # regenera los vectores de referencia Python → C++
+```
+
+**C++.** Cada módulo tiene su archivo `tests/pruebas_<módulo>.cpp`, que incluye
+`tests/pruebas.hpp`; el Makefile los enlaza todos en `bin/pruebas` y
+`tests/principal.cpp` tiene el único `main`. No hace falta registrar nada a mano:
+
+```cpp
+#include "pruebas.hpp"
+
+PRUEBA(nombre_unico_y_descriptivo) {
+    REQUERIR(v.size() == 3);                 // si falla, termina la prueba
+    VERIFICAR(v[2] > 0);
+    VERIFICAR_IGUAL(obtenido, esperado);     // exacta: enteros, texto, vectores
+    VERIFICAR_CERCA(obtenido, esperado, 1e-9);  // reales y complejos
+}
+```
+
+`tests/pruebas_ejemplo.cpp` sirve de plantilla. Los nombres de las pruebas son
+únicos en todo el proyecto.
+
+**Python.** Las pruebas van en `prototipo/tests/test_<módulo>.py` con `unittest`
+e importan los módulos por su nombre (`import vectores`).
+
+**Comparación con el prototipo (vectores de referencia).** El prototipo escribe
+entradas y salidas en `tests/vectores/<módulo>_<caso>.txt`, y las pruebas de C++
+las leen (`pruebas::leer_reales`, `leer_complejos`, `leer_enteros`, `leer_textos`)
+y comparan con su propia implementación:
+
+- Para comparar un módulo así, se escribe `prototipo/vectores_<módulo>.py` con una
+  función `generar(directorio)` que llama a `vectores.escribir`;
+  `prototipo/vectores_ejemplo.py` sirve de plantilla. El formato está en
+  `prototipo/vectores.py`.
+- Los vectores **se versionan**: después de cambiar el prototipo o un generador,
+  `make vectores` y commit de `tests/vectores/`. La CI corre
+  `python prototipo/vectores.py --verificar` y falla si no están al día.
+- Enteros y texto se comparan exactos; reales, con una tolerancia relativa de
+  1e-12 más 1e-12 del máximo absoluto del vector. Cada prueba de C++ elige su
+  propia tolerancia según el algoritmo.
 
 ## Ejecución
 

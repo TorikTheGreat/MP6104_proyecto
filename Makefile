@@ -2,8 +2,8 @@
 # Esteganografía por enmascaramiento con eco
 #
 # Uso:  make | make test | make venv | make prototipo-test | make datos
-#       make experimentos | make articulo | make pdf | make all | make clean
-#       make distclean | make help
+#       make vectores | make experimentos | make articulo | make pdf | make all
+#       make clean | make distclean | make help
 #
 # Los objetivos funcionan aunque todavía no haya código: avisan y terminan
 # sin error, para que la integración continua pase desde el primer commit.
@@ -39,7 +39,7 @@ USA_VENV := $(if $(filter $(VENV)/bin/python,$(PY)),venv)
 TEXDIR   := articulo
 PDF      := $(TEXDIR)/articulo.pdf
 
-.PHONY: programa all test venv prototipo-test experimentos datos articulo pdf clean distclean help
+.PHONY: programa all test venv prototipo-test vectores experimentos datos articulo pdf clean distclean help
 
 ifneq ($(wildcard src/main.cpp),)
 programa: $(BIN)
@@ -54,6 +54,7 @@ help:
 	@echo "  make test           - compila y corre las pruebas de C++ (tests/*.cpp)"
 	@echo "  make venv           - crea .venv e instala prototipo/requirements.txt"
 	@echo "  make prototipo-test - corre las pruebas del prototipo (prototipo/tests/test_*.py)"
+	@echo "  make vectores       - regenera los vectores de referencia Python -> C++ (tests/vectores/)"
 	@echo "  make datos          - regenera los fragmentos WAV de prueba (scripts/obtener_datos.sh)"
 	@echo "  make experimentos   - corre los experimentos (prototipo/experimentos_*.py)"
 	@echo "  make articulo       - compila el artículo en articulo/build/"
@@ -109,6 +110,11 @@ else
 prototipo-test:
 	@echo "Todavía no hay pruebas del prototipo en prototipo/tests/."
 endif
+
+# Vectores de referencia que leen las pruebas de C++; se versionan. La CI
+# comprueba que estén al día con: python prototipo/vectores.py --verificar
+vectores: $(USA_VENV)
+	$(PY) prototipo/vectores.py
 
 datos:
 	@if [ -f scripts/obtener_datos.sh ]; then bash scripts/obtener_datos.sh; \
