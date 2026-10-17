@@ -1,5 +1,6 @@
 /*
-Transformada rápida de Fourier (FFT) propia, sin bibliotecas (R1).
+Transformada rápida de Fourier (FFT) propia (decisión de diseño; R45 pide evaluar
+la autocorrelación del cepstro en el dominio espectral).
 
 Consiste en una Cooley-Tukey iterativa de base 2, con permutación por inversión de bits y log2(N)
 etapas de mariposas. Se calculan los factores de giro w_N^k = exp(-j*2*pi*k/N) una
