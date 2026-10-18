@@ -21,6 +21,12 @@ Formato del archivo (UTF-8):
               válido y un "#" al inicio; la barra invertida es \\\\.
 Solo la primera línea es cabecera.
 
+Los generadores con números aleatorios usan np.random.default_rng con semilla
+fija. NumPy garantiza la secuencia de bits de PCG64 entre versiones, pero no la
+de sus métodos (integers, uniform, standard_normal): si --verificar falla al
+cambiar la versión de numpy en requirements.txt sin otro cambio, basta con
+regenerar los vectores.
+
 Uso:
     python prototipo/vectores.py              regenera tests/vectores/
     python prototipo/vectores.py --verificar  falla si lo versionado no coincide
