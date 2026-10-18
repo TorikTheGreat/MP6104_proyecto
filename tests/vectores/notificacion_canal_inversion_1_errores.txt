@@ -1,0 +1,2 @@
+# generado por prototipo/vectores_notificacion.py, semilla 7, tipo=texto
+ADVERTENCIA: metadato desconocido (dañado): estudio Ártico
