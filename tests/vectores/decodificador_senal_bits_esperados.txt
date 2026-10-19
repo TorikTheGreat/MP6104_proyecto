@@ -1,0 +1,9 @@
+# generado por prototipo/vectores_decodificador.py, semilla 44100, tipo=entero
+1
+0
+1
+1
+0
+0
+1
+0
