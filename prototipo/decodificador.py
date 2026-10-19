@@ -2,7 +2,7 @@
 """Decodificador de esteganografía por enmascaramiento con eco (R42-R47).
 
 Evalúa la autocorrelación del cepstro en el dominio espectral (R44, R45):
-    R_cc(n) = |IFFT( (ln |FFT(v_norm(n))|)^2 )|
+    R_cc(n) = Re{ IFFT( (ln |FFT(v_norm(n))|)^2 ) }
 sobre cada ventana normalizada por su valor eficaz (RMS) para garantizar
 invarianza ante la escala de la señal, y clasifica cada ventana como 0, 1
 o SIN_ECO (-1) según la magnitud en los retardos d0 y d1 (R43, R47).
@@ -23,7 +23,7 @@ SIN_ECO = -1
 RMS_REFERENCIA = 1000.0
 UMBRAL_SILENCIO = 1e-5
 UMBRAL_ECO = 0.70
-EPSILON_ESPECTRO = 1e-12
+EPSILON_ESPECTRO = 1e-6
 FRACCION_MIN_VENTANAS_CON_ECO = 0.25
 
 
@@ -75,10 +75,14 @@ def normalizar_ventana(
 def autocorrelacion_cepstro(
     ventana: Sequence[float | int] | npt.NDArray[Any],
 ) -> npt.NDArray[np.float64]:
-    """Magnitud de la autocorrelación del cepstro evaluada en el dominio espectral (R44, R45).
+    """Autocorrelación del cepstro evaluada en el dominio espectral (R44, R45).
 
     Rellena con ceros hasta la siguiente potencia de 2 del largo de la ventana:
-        R_cc(n) = |IFFT( (ln max(|FFT(v_norm)|, EPSILON_ESPECTRO))^2 )|
+        R_cc(n) = Re{ IFFT( (ln max(|FFT(v_norm)|, EPSILON_ESPECTRO))^2 ) }
+
+    (ln|X|)^2 es real y par, así que R_cc es real: se toma la parte real (la
+    imaginaria es solo redondeo). Con el valor absoluto, los valores negativos de
+    la música se confundirían con picos de eco.
     """
     v_norm = normalizar_ventana(ventana)
     n_fft = potencia_de_2_siguiente(v_norm.size)
@@ -88,7 +92,7 @@ def autocorrelacion_cepstro(
     magnitud = np.maximum(np.abs(espectro), EPSILON_ESPECTRO)
     log_espectro = np.log(magnitud)
     rcc = np.fft.ifft(log_espectro * log_espectro)
-    return np.abs(rcc).astype(np.float64)
+    return rcc.real.astype(np.float64)
 
 
 def evaluar_ventana(

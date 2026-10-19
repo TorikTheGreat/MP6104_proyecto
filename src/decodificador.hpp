@@ -4,7 +4,7 @@ Decodificador de esteganografía por enmascaramiento con eco (R42-R47).
 
 Evalúa la autocorrelación del cepstro en el dominio espectral (R44, R45) usando
 la FFT propia de src/fft.hpp:
-    R_cc(n) = |IFFT( (ln max(|FFT(v_norm)|, EPSILON_ESPECTRO))^2 )|
+    R_cc(n) = Re{ IFFT( (ln max(|FFT(v_norm)|, EPSILON_ESPECTRO))^2 ) }
 sobre cada ventana normalizada por su valor eficaz (RMS) para garantizar
 invarianza ante la escala de la señal, y clasifica cada ventana como 0, 1 o
 SIN_ECO (-1) según la magnitud en los retardos d0 y d1 (R43, R47).
@@ -25,7 +25,7 @@ constexpr int SIN_ECO = -1;
 constexpr double RMS_REFERENCIA = 1000.0;
 constexpr double UMBRAL_SILENCIO = 1e-5;
 constexpr double UMBRAL_ECO = 0.70;
-constexpr double EPSILON_ESPECTRO = 1e-12;
+constexpr double EPSILON_ESPECTRO = 1e-6;
 constexpr double FRACCION_MIN_VENTANAS_CON_ECO = 0.25;
 
 struct DiagnosticoVentana {
@@ -49,7 +49,7 @@ double rms_ventana(const std::vector<std::int16_t>& ventana);
 std::vector<double> normalizar_ventana(const std::vector<double>& ventana);
 std::vector<double> normalizar_ventana(const std::vector<std::int16_t>& ventana);
 
-// Magnitud de la autocorrelación del cepstro evaluada en el dominio espectral (R44, R45).
+// Autocorrelación del cepstro (parte real) evaluada en el dominio espectral (R44, R45).
 std::vector<double> autocorrelacion_cepstro(const std::vector<double>& ventana);
 std::vector<double> autocorrelacion_cepstro(const std::vector<std::int16_t>& ventana);
 

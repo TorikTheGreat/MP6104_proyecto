@@ -167,8 +167,10 @@ def generar_figuras(
         ax_i.axvline(d1, color="#d95f02", linestyle="-.", linewidth=1.0, label="$d_1=66$")
         ax_i.axhline(dec.UMBRAL_ECO, color="crimson", linestyle=":", linewidth=1.0, label="Umbral eco")
         ax_i.set_title(titulo, fontsize=8.5)
-        ax_i.set_ylabel("$|R_{cc}(n)|$", fontsize=8)
-        ax_i.set_ylim(0.0, max(3.5, float(np.max(rcc_bit0[lags])) * 1.12))
+        ax_i.set_ylabel("$R_{cc}(n)$", fontsize=8)
+        ax_i.axhline(0.0, color="black", linewidth=0.5)
+        ax_i.set_ylim(min(-1.0, float(np.min(rcc_orig[lags])) * 1.12),
+                      max(3.5, float(np.max(rcc_bit0[lags])) * 1.12))
         ax_i.grid(True, alpha=0.3)
     axes[0].legend(fontsize=7.5, loc="upper right", ncol=3)
     axes[2].set_xlabel("Quefrencia $n$ (muestras)")
@@ -189,7 +191,7 @@ def generar_figuras(
         (0.2, 1.55, 1.65, 1.0, "Enventanado\n$v_k(n)$\n$L = K \\max(d_0, d_1)$"),
         (2.25, 1.55, 1.75, 1.0, "Normalización\npor valor eficaz\n$\\hat{v}_k = v_k \\frac{\\mathrm{RMS}_{\\mathrm{ref}}}{\\mathrm{RMS}(v_k)}$"),
         (4.4, 1.55, 1.75, 1.0, "Dominio espectral\n$X_k = \\mathrm{FFT}(\\hat{v}_k)$\n$S_k = (\\ln|X_k|)^2$"),
-        (6.55, 1.55, 1.55, 1.0, "Autocorrelación\ndel cepstro\n$R_{cc} = |\\mathrm{IFFT}(S_k)|$"),
+        (6.55, 1.55, 1.55, 1.0, "Autocorrelación\ndel cepstro\n$R_{cc} = \\mathrm{Re}\\{\\mathrm{IFFT}(S_k)\\}$"),
         (8.45, 1.55, 1.55, 1.0, "Clasificador\n$r_0=R_{cc}(d_0)$\n$r_1=R_{cc}(d_1)$"),
         (4.4, 0.15, 2.8, 0.85, "Filtrado de colas y señales\nsin eco ($\\mathrm{SIN\\_ECO} = -1$)"),
         (7.7, 0.15, 2.3, 0.85, "Secuencia de bits\n$\\rightarrow$ Trama de metadatos"),
