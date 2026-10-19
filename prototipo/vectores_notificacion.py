@@ -45,6 +45,7 @@ def generar(directorio):
 
     crudos = [b"", "Ñandú".encode(), b"a\xe2\x82", b"\xc0\xaf", b"\xed\xa0\x80",
               b"\xf4\x90\x80\x80", b"\xf0\x9f\x8e\xb5x", b"\x80\xbf", b"\xe0\x80\x80",
-              b"\xf5\x80", b"\xc2", bytes(range(0x80, 0x100))]
+              b"\xf5\x80", b"\xc2", bytes(range(0x80, 0x100)),
+              b"\xf0\x80\x80\x80", b"\xf3\x80\x80\x80", b"\xef\xbf\xbd"]
     esc("visible_entradas", "texto", crudos)
     esc("visible_salidas", "texto", [n.texto_visible(c) for c in crudos])

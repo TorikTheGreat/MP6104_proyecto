@@ -1,6 +1,7 @@
 # generado por prototipo/vectores_linea_comandos.py, tipo=texto
 caso
 codigo=2
+mensaje=para decodificar se necesita solo ENTRADA.wav (para codificar, al menos un metadato)
 caso
 arg entrada.wav
 codigo=0
@@ -24,11 +25,13 @@ caso
 arg entrada.wav
 arg salida.wav
 codigo=2
+mensaje=para decodificar se necesita solo ENTRADA.wav (para codificar, al menos un metadato)
 caso
 arg entrada.wav
 arg --titulo
 arg Hola
 codigo=2
+mensaje=para codificar se necesitan ENTRADA.wav y SALIDA.wav
 caso
 arg entrada.wav
 arg salida.wav
@@ -57,6 +60,7 @@ arg entrada.wav
 arg --titulo
 arg Hola
 codigo=2
+mensaje=SALIDA.wav no puede ser la misma ruta que ENTRADA.wav
 caso
 arg entrada.wav
 arg salida.wav
@@ -109,6 +113,7 @@ arg entrada.wav
 arg salida.wav
 arg --titulo
 codigo=2
+mensaje=falta el valor de --titulo
 caso
 arg entrada.wav
 arg salida.wav
@@ -116,6 +121,7 @@ arg --titulo
 arg --artista
 arg x
 codigo=2
+mensaje=falta el valor de --titulo
 caso
 arg entrada.wav
 arg salida.wav
@@ -143,6 +149,7 @@ arg salida.wav
 arg --titulo
 arg -x
 codigo=2
+mensaje=falta el valor de --titulo
 caso
 arg entrada.wav
 arg salida.wav
@@ -171,6 +178,7 @@ arg salida.wav
 arg --titulo
 arg 
 codigo=2
+mensaje=--titulo: el texto debe tener de 1 a 255 bytes (tiene 0)
 caso
 arg entrada.wav
 arg salida.wav
@@ -199,6 +207,7 @@ arg salida.wav
 arg --titulo
 arg xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 codigo=2
+mensaje=--titulo: el texto debe tener de 1 a 255 bytes (tiene 256)
 caso
 arg entrada.wav
 arg salida.wav
@@ -279,6 +288,7 @@ arg ok
 arg --titulo
 arg 
 codigo=2
+mensaje=--titulo: el texto debe tener de 1 a 255 bytes (tiene 0)
 caso
 arg entrada.wav
 arg --retardo0
@@ -311,6 +321,7 @@ arg centro
 arg --retardo0
 arg x
 codigo=2
+mensaje=--retardo0: se esperaba un entero de us, no "x"
 caso
 arg entrada.wav
 arg salida.wav
@@ -339,6 +350,7 @@ arg salida.wav
 arg --titulo
 arg inv\xE1lido
 codigo=2
+mensaje=--titulo: el texto no es UTF-8 válido
 caso
 arg entrada.wav
 arg salida.wav
@@ -401,14 +413,17 @@ arg salida.wav
 arg --desconocida
 arg x
 codigo=2
+mensaje=opción desconocida: --desconocida
 caso
 arg entrada.wav
 arg --desconocida
 codigo=2
+mensaje=opción desconocida: --desconocida
 caso
 arg entrada.wav
 arg -h
 codigo=2
+mensaje=opción desconocida: -h
 caso
 arg entrada.wav
 arg --ayuda
@@ -451,6 +466,7 @@ diagnostico
 caso
 arg --ayuda=si
 codigo=2
+mensaje=--ayuda no lleva valor
 caso
 arg --
 arg --titulo
@@ -541,10 +557,12 @@ arg entrada.wav
 arg --canal
 arg centro
 codigo=2
+mensaje=--canal: se esperaba izquierdo o derecho, no "centro"
 caso
 arg entrada.wav
 arg --canal=Derecho
 codigo=2
+mensaje=--canal: se esperaba izquierdo o derecho, no "Derecho"
 caso
 arg entrada.wav
 arg --diagnostico
@@ -570,6 +588,7 @@ caso
 arg entrada.wav
 arg --diagnostico=
 codigo=2
+mensaje=--diagnostico: falta la ruta
 caso
 arg entrada.wav
 arg --retardo0
@@ -600,6 +619,7 @@ arg 1000
 arg --retardo1
 arg 1005
 codigo=2
+mensaje=los retardos 1000 y 1005 us dan las mismas 44 muestras; deben ser distintos
 caso
 arg entrada.wav
 arg --retardo0
@@ -653,6 +673,7 @@ arg 11
 arg --retardo1
 arg 1000
 codigo=2
+mensaje=--retardo0: 11 us está fuera de rango (12 a 1000000 us, al menos 1 muestra)
 caso
 arg entrada.wav
 arg --retardo0
@@ -660,6 +681,7 @@ arg 0
 arg --retardo1
 arg 1000
 codigo=2
+mensaje=--retardo0: 0 us está fuera de rango (12 a 1000000 us, al menos 1 muestra)
 caso
 arg entrada.wav
 arg --retardo0
@@ -667,12 +689,14 @@ arg 1000001
 arg --retardo1
 arg 1000
 codigo=2
+mensaje=--retardo0: 1000001 us está fuera de rango (12 a 1000000 us, al menos 1 muestra)
 caso
 arg entrada.wav
 arg --retardo0=-5
 arg --retardo1
 arg 1000
 codigo=2
+mensaje=--retardo0: se esperaba un entero de us, no "-5"
 caso
 arg entrada.wav
 arg --retardo0
@@ -680,6 +704,7 @@ arg -5
 arg --retardo1
 arg 1000
 codigo=2
+mensaje=falta el valor de --retardo0
 caso
 arg entrada.wav
 arg --retardo0
@@ -687,6 +712,7 @@ arg 1e3
 arg --retardo1
 arg 1500
 codigo=2
+mensaje=--retardo0: se esperaba un entero de us, no "1e3"
 caso
 arg entrada.wav
 arg --retardo0
@@ -694,6 +720,7 @@ arg  12
 arg --retardo1
 arg 1500
 codigo=2
+mensaje=--retardo0: se esperaba un entero de us, no " 12"
 caso
 arg entrada.wav
 arg --retardo0
@@ -701,6 +728,7 @@ arg ١٢
 arg --retardo1
 arg 1500
 codigo=2
+mensaje=--retardo0: se esperaba un entero de us, no "١٢"
 caso
 arg entrada.wav
 arg --retardo0
@@ -708,6 +736,7 @@ arg 12\n
 arg --retardo1
 arg 1500
 codigo=2
+mensaje=--retardo0: se esperaba un entero de us, no "12\n"
 caso
 arg entrada.wav
 arg --retardo0
@@ -715,6 +744,7 @@ arg 1e9
 arg --retardo1
 arg 1500
 codigo=2
+mensaje=--retardo0: se esperaba un entero de us, no "1e9"
 caso
 arg entrada.wav
 arg --retardo0
@@ -722,6 +752,7 @@ arg 99999999999
 arg --retardo1
 arg 1500
 codigo=2
+mensaje=--retardo0: se esperaba un entero de us, no "99999999999"
 caso
 arg entrada.wav
 arg --retardo0
@@ -729,6 +760,7 @@ arg 0x10
 arg --retardo1
 arg 1500
 codigo=2
+mensaje=--retardo0: se esperaba un entero de us, no "0x10"
 caso
 arg entrada.wav
 arg --retardo0
@@ -736,6 +768,7 @@ arg 1_000
 arg --retardo1
 arg 1500
 codigo=2
+mensaje=--retardo0: se esperaba un entero de us, no "1_000"
 caso
 arg entrada.wav
 arg --retardo0
@@ -820,6 +853,7 @@ arg 12.5
 arg --atenuacion1
 arg 100
 codigo=2
+mensaje=--atenuacion1: 100 % está fuera de (0, 100)
 caso
 arg entrada.wav
 arg --retardo0
@@ -881,6 +915,7 @@ arg 1500
 arg --atenuacion0
 arg 0
 codigo=2
+mensaje=--atenuacion0: 0 % está fuera de (0, 100)
 caso
 arg entrada.wav
 arg --retardo0
@@ -890,6 +925,7 @@ arg 1500
 arg --atenuacion0
 arg 0.0
 codigo=2
+mensaje=--atenuacion0: 0.0 % está fuera de (0, 100)
 caso
 arg entrada.wav
 arg --retardo0
@@ -899,6 +935,7 @@ arg 1500
 arg --atenuacion0
 arg 100.000001
 codigo=2
+mensaje=--atenuacion0: 100.000001 % está fuera de (0, 100)
 caso
 arg entrada.wav
 arg --retardo0
@@ -908,6 +945,7 @@ arg 1500
 arg --atenuacion0
 arg nan
 codigo=2
+mensaje=--atenuacion0: se esperaba un porcentaje como 30 o 12.5, no "nan"
 caso
 arg entrada.wav
 arg --retardo0
@@ -917,6 +955,7 @@ arg 1500
 arg --atenuacion0
 arg inf
 codigo=2
+mensaje=--atenuacion0: se esperaba un porcentaje como 30 o 12.5, no "inf"
 caso
 arg entrada.wav
 arg --retardo0
@@ -926,6 +965,7 @@ arg 1500
 arg --atenuacion0
 arg 30.
 codigo=2
+mensaje=--atenuacion0: se esperaba un porcentaje como 30 o 12.5, no "30."
 caso
 arg entrada.wav
 arg --retardo0
@@ -935,6 +975,7 @@ arg 1500
 arg --atenuacion0
 arg .5
 codigo=2
+mensaje=--atenuacion0: se esperaba un porcentaje como 30 o 12.5, no ".5"
 caso
 arg entrada.wav
 arg --retardo0
@@ -944,6 +985,7 @@ arg 1500
 arg --atenuacion0
 arg 1e1
 codigo=2
+mensaje=--atenuacion0: se esperaba un porcentaje como 30 o 12.5, no "1e1"
 caso
 arg entrada.wav
 arg --retardo0
@@ -953,6 +995,7 @@ arg 1500
 arg --atenuacion0
 arg 30,5
 codigo=2
+mensaje=--atenuacion0: se esperaba un porcentaje como 30 o 12.5, no "30,5"
 caso
 arg entrada.wav
 arg --retardo0
@@ -962,6 +1005,7 @@ arg 1500
 arg --atenuacion0
 arg 1.1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
 codigo=2
+mensaje=--atenuacion0: se esperaba un porcentaje como 30 o 12.5, no "1.1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
 caso
 arg entrada.wav
 arg --retardo0
@@ -994,6 +1038,66 @@ arg entrada.wav
 arg --retardo0
 arg 1500
 codigo=2
+mensaje=los retardos 1500 y 1500 us dan las mismas 66 muestras; deben ser distintos
+caso
+arg entrada.wav
+arg --retardo0
+arg 00001000
+arg --retardo1
+arg 1500
+codigo=2
+mensaje=--retardo0: se esperaba un entero de us, no "00001000"
+caso
+arg entrada.wav
+arg --retardo0
+arg 1000
+arg --retardo1
+arg 1500
+arg --atenuacion0
+arg 0030
+codigo=2
+mensaje=--atenuacion0: se esperaba un porcentaje como 30 o 12.5, no "0030"
+caso
+arg entrada.wav
+arg --retardo0
+arg 1000
+arg --retardo1
+arg 1500
+arg --atenuacion0
+arg 030.5
+codigo=0
+modo=decodificar
+entrada=entrada.wav
+salida=
+titulo
+artista
+autor
+album
+anio
+invitado
+productor
+retardo0=1000
+retardo1=1500
+atenuacion0=30.5
+atenuacion1
+canal=izquierdo
+diagnostico
+caso
+arg entrada.wav
+arg --retardo0
+arg 1000
+arg --retardo1
+arg 1500
+arg --atenuacion0
+arg 1.1234567
+codigo=2
+mensaje=--atenuacion0: se esperaba un porcentaje como 30 o 12.5, no "1.1234567"
+caso
+arg --ayuda
+arg --retardo0
+arg x
+codigo=2
+mensaje=--retardo0: se esperaba un entero de us, no "x"
 caso
 arg entrada.wav
 arg --retardo0

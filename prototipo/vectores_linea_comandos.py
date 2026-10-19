@@ -7,6 +7,7 @@ Tipo texto, una línea por elemento:
     caso
     arg <argumento>          uno por argumento, en orden (bytes tal cual)
     codigo=<0 o 2>
+    mensaje=<texto>          solo si codigo=2: el mensaje de error
     <campo>=<valor>          solo si codigo=0, todos los campos en orden fijo;
     <campo>                  sin "=" si la opción no se dio (queda el por defecto)
 
@@ -104,6 +105,13 @@ def _casos():
         [e, *r, b"--atenuacion0", b"0.1", b"--atenuacion1", b"33.333333"],
         # Un solo retardo, igual al por defecto del otro: se rechaza con el resuelto.
         [e, b"--retardo0", str(p.RETARDO1_US).encode()],
+        # Bordes de la forma de los números, con ceros a la izquierda.
+        [e, b"--retardo0", b"00001000", b"--retardo1", b"1500"],
+        [e, *r, b"--atenuacion0", b"0030"],
+        [e, *r, b"--atenuacion0", b"030.5"],
+        [e, *r, b"--atenuacion0", b"1.1234567"],
+        # --ayuda no evita la validación de los demás valores.
+        [b"--ayuda", b"--retardo0", b"x"],
     ]
     # Atenuaciones al azar: C++ debe dar el mismo double que la conversión con enteros.
     rng = random.Random(4)
@@ -124,7 +132,7 @@ def _lineas(args):
     lineas = ["caso"] + [b"arg " + a for a in args]
     r = lc.analizar(args)
     if isinstance(r, lc.ErrorUso):
-        return lineas + [f"codigo={lc.ERROR_USO}"]
+        return lineas + [f"codigo={lc.ERROR_USO}", f"mensaje={r.mensaje}"]
     lineas += [f"codigo={lc.EXITO}", f"modo={r.modo}", b"entrada=" + r.entrada,
                b"salida=" + r.salida]
     for categoria, campo in enumerate(CAMPOS_METADATOS, start=1):
@@ -145,3 +153,4 @@ def generar(directorio):
     for args in _casos():
         lineas += _lineas(args)
     escribir(directorio, "linea_comandos_casos", "texto", lineas, generador=__file__)
+    escribir(directorio, "linea_comandos_uso", "texto", lc.USO.splitlines(), generador=__file__)

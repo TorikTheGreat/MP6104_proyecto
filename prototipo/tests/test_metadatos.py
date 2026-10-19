@@ -75,6 +75,12 @@ class PruebasDesdeBits(unittest.TestCase):
         self.assertEqual(m.desde_bits((bueno + malo) * 3),
                          [(VALIDO, ARTISTA, b"Banda"), (DANADO, TITULO, b"x")])
 
+    def test_danados_con_el_mismo_texto_se_avisan_una_vez(self):
+        # El byte de categoría de un dañado no es confiable: se agrupan por texto.
+        bueno = registro(AUTOR, b"ok")
+        bits = bueno + registro(TITULO, b"x", crc=0) + bueno + registro(ARTISTA, b"x", crc=0)
+        self.assertEqual(m.desde_bits(bits), [(VALIDO, AUTOR, b"ok"), (DANADO, TITULO, b"x")])
+
     def test_desconocidos(self):
         bits = registro(TITULO, b"a") + registro(9, b"raro") + registro(9, b"raro")
         self.assertEqual(m.desde_bits(bits),
