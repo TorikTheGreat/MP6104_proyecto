@@ -6,7 +6,7 @@ Instituto Tecnológico de Costa Rica, IV Cuatrimestre 2026.
 - **Integrantes:**
   - Marco Zolla Salazar
   - Por completar (rol A) <!-- TODO: cada integrante cambia solo su renglón -->
-  - Por completar (rol B)
+  - Diego Martínez
 - **Profesor:** M.Sc. Carl Michael Grüner Monzón
 
 Sistema que esconde metadatos de una canción (título, artista, autor, álbum, año,
