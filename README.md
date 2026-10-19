@@ -110,17 +110,47 @@ y comparan con su propia implementación:
 
 ## Ejecución
 
-<!-- TODO: completar con las opciones definitivas. -->
-
 ```bash
 # Codificar: hay al menos un metadato (R28)
-./bin/ecoesteg original.wav codificado.wav --titulo "..." --artista "..."
+./bin/ecoesteg original.wav codificado.wav --titulo "Canción" --artista "Banda"
 
-# Decodificar: sin metadatos (R39)
+# Decodificar: sin metadatos (R39), con los mismos parámetros de enmascaramiento
 ./bin/ecoesteg codificado.wav
+
+./bin/ecoesteg --ayuda
 ```
 
 Los archivos deben ser WAV PCM de 16 bits, 44.1 kHz, estéreo.
+
+| Opción | Valor | Por omisión |
+|---|---|---|
+| `--titulo`, `--artista`, `--autor`, `--album`, `--anio`, `--invitado`, `--productor` | texto UTF-8 de 1 a 255 bytes | |
+| `--retardo0`, `--retardo1` | retardo del eco del bit 0 o 1, en us: entero de 12 a 1 000 000 (al menos una muestra) | 1000, 1500 |
+| `--atenuacion0`, `--atenuacion1` | amplitud del eco del bit 0 o 1, en %: (0, 100), con hasta 6 decimales | 30, 30 |
+| `--canal` | `izquierdo` o `derecho` | `izquierdo` |
+| `--diagnostico` | ruta de un CSV con el bit de cada ventana | |
+| `--ayuda` | muestra el uso | |
+
+- Se acepta `--opcion valor` y `--opcion=valor`, antes o después de los archivos;
+  `--` termina las opciones. Un valor que empieza con `-` se escribe con `=`
+  (`--titulo=-x`).
+- Si una opción se repite, vale la última (R9). Una opción desconocida (R7) o un
+  valor inválido termina el programa con un mensaje y el uso.
+- La atenuación p es la amplitud del eco: el filtro del bit b es
+  H_b(z) = 1 + (p_b/100) z^(-t_b) (interpretación de R22, pendiente de confirmar).
+- Los dos retardos deben dar distinto número de muestras (1 muestra = 22.68 us).
+- Al codificar, el archivo de salida no puede ser el mismo de entrada.
+- Los metadatos se repiten hasta llenar el audio. Si no caben ni una vez, se
+  codifica lo que cabe y se avisa en la salida de error cuántos bits se perdieron.
+- Al decodificar, cada metadato se imprime en la salida estándar
+  (`Título: Canción`, R48, R49). Los metadatos desconocidos o dañados se avisan
+  en la salida de error (R50, R51, sección 4.3.4), por ejemplo
+  `ADVERTENCIA: metadato desconocido (dañado): Canci?n`. También se avisa si no se
+  encontró ninguno.
+
+**Códigos de salida:** 0 éxito (también si el archivo no tenía metadatos o si los
+metadatos no cupieron completos), 1 error de ejecución (archivo o formato WAV), 2
+error de uso.
 
 ## Experimentos y artículo
 
