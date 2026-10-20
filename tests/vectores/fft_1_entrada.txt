@@ -1,0 +1,2 @@
+# generado por prototipo/vectores_fft.py, semilla 44100, tipo=complejo
+0.81494835435574553 -1.5243316057942564

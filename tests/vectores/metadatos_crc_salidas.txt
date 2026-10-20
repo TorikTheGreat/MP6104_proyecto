@@ -1,0 +1,5 @@
+# generado por prototipo/vectores_metadatos.py, semilla 7, tipo=entero
+10673
+65535
+16225
+16317
