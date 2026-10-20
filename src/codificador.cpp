@@ -130,23 +130,54 @@ void escribir_wav(const string& ruta, const Audio& original, const vector<double
 
 
 vector<double> codificar_eco(const vector<int16_t>& x, const string& bits,
-                            size_t D0, size_t D1, double a0, double a1, size_t ventana) {
+                            size_t D0, size_t D1, double a0, double a1,
+                            size_t ventana) {
     const size_t maxD = max(D0, D1);
-    if (D0 == 0 || D1 == 0 || D0 == D1 || ventana <= maxD || ventana > x.size())
+
+    if (D0 == 0 || D1 == 0 || D0 == D1 ||
+        ventana <= maxD || ventana > x.size())
         throw runtime_error("Retardos o ventana invalidos");
-    if (!isfinite(a0) || !isfinite(a1) || a0 < 0 || a0 >= 1 || a1 < 0 || a1 >= 1)
+
+    if (!isfinite(a0) || !isfinite(a1) ||
+        a0 < 0 || a0 >= 1 || a1 < 0 || a1 >= 1)
         throw runtime_error("Atenuaciones invalidas");
+
     if (bits.empty() || bits.size() > x.size() / ventana ||
         bits.find_first_not_of("01") != string::npos)
         throw runtime_error("Mensaje binario invalido o demasiado largo");
+
+    // Conservar el audio original y reservar la cola de convolucion.
     vector<double> salida(x.size() + maxD, 0.0);
-    for (size_t i = 0; i < x.size(); ++i) salida[i] = static_cast<double>(x[i]);
+    for (size_t i = 0; i < x.size(); ++i)
+        salida[i] = static_cast<double>(x[i]);
+
     for (size_t b = 0; b < bits.size(); ++b) {
         const size_t D = bits[b] == '0' ? D0 : D1;
         const double a = bits[b] == '0' ? a0 : a1;
         const size_t inicio = b * ventana;
-        for (size_t j = 0; j < ventana; ++j)
-            salida[inicio + j + D] += a * static_cast<double>(x[inicio + j]);
+
+        // Respuesta al impulso: h[n] = delta[n] + a*delta[n-D].
+        vector<double> h(D + 1, 0.0);
+        h[0] = 1.0;
+        h[D] = a;
+
+        // Convolucion lineal de longitud M + N - 1.
+        vector<double> y(ventana + h.size() - 1, 0.0);
+
+        for (size_t n = 0; n < ventana; ++n) {
+            const double muestra = static_cast<double>(x[inicio + n]);
+            for (size_t k = 0; k < h.size(); ++k)
+                y[n + k] += muestra * h[k];
+        }
+
+        // Solapamiento y suma. Se descuenta la señal directa
+        // porque ya se copio a la salida.
+        for (size_t n = 0; n < y.size(); ++n) {
+            const double directo =
+                n < ventana ? static_cast<double>(x[inicio + n]) : 0.0;
+            salida[inicio + n] += y[n] - directo;
+        }
     }
+
     return salida;
 }
