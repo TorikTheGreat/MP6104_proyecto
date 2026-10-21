@@ -25,10 +25,10 @@ en C++.
 | `src/` | Implementación final en C++17 (`bin/ecoesteg`). |
 | `tests/` | Pruebas de la implementación en C++ (`make test`). |
 | `.github/workflows/ci.yml` | Integración continua: compila con `-Werror` y corre las pruebas de C++ y Python en cada push y pull request. |
-| `prototipo/` | Prototipo de los algoritmos en Python, sus pruebas (`prototipo/tests/`) y experimentos (`experimentos_*.py`). |
+| `prototipo/` | Prototipo en Python: los algoritmos, el programa de punta a punta (`punta_a_punta.py`), sus pruebas (`prototipo/tests/`) y los experimentos (`experimentos_*.py`). |
 | `articulo/` | Artículo científico (LaTeX, IEEE Transactions) y su PDF. |
 | `datos/` | Fragmentos WAV de prueba, con fuente y licencia en `datos/README.md` (`make datos` los regenera). |
-| `scripts/` | Descarga de datos y ejecución de experimentos. |
+| `scripts/` | Descarga y recorte de los fragmentos de prueba (`obtener_datos.sh`) y un demo del codificador (`codificador_demo.cpp`). |
 | `figuras/`, `resultados/` | Figuras y tablas que usa el artículo; `resultados/ejemplo_codificado.wav` es un ejemplo de archivo codificado (R38). |
 | `Makefile` | Construcción del programa, pruebas, experimentos y artículo. |
 
@@ -41,11 +41,15 @@ en C++.
   `prototipo/requirements.txt`), solo para el prototipo y los experimentos.
 - **LaTeX:** TeX Live con `IEEEtran`, `babel-spanish`, `siunitx`, `booktabs`,
   `cleveref` y `latexmk`.
+- **Datos (`make datos`):** `curl` y `ffmpeg` (o GStreamer). Los WAV ya están en
+  `datos/`; el script solo los regenera si faltan.
+
+`pesq` se compila al instalarse (necesita `python3-dev` y un compilador de C).
 
 En Debian/Ubuntu:
 
 ```bash
-sudo apt install build-essential python3-venv python3-dev latexmk \
+sudo apt install build-essential python3-venv python3-dev latexmk curl ffmpeg \
                  texlive-latex-recommended texlive-latex-extra \
                  texlive-lang-spanish texlive-publishers texlive-science
 ```
@@ -118,17 +122,23 @@ y comparan con su propia implementación:
 ./bin/ecoesteg codificado.wav
 
 ./bin/ecoesteg --ayuda
+
+# El ejemplo codificado (R38)
+./bin/ecoesteg resultados/ejemplo_codificado.wav      # Título: Primavera
 ```
+
+El prototipo en Python acepta los mismos argumentos y da el mismo resultado:
+`python prototipo/punta_a_punta.py ...`.
 
 Los archivos deben ser WAV PCM de 16 bits, 44.1 kHz, estéreo.
 
-| Opción | Valor | Por omisión |
+| Opción | Valor | Por defecto |
 |---|---|---|
 | `--titulo`, `--artista`, `--autor`, `--album`, `--anio`, `--invitado`, `--productor` | texto UTF-8 de 1 a 255 bytes | |
 | `--retardo0`, `--retardo1` | retardo del eco del bit 0 o 1, en us: entero de 12 a 1 000 000 (al menos una muestra) | 1000, 1500 |
 | `--atenuacion0`, `--atenuacion1` | amplitud del eco del bit 0 o 1, en %: (0, 100), con hasta 6 decimales | 30, 30 |
 | `--canal` | `izquierdo` o `derecho` | `izquierdo` |
-| `--diagnostico` | ruta de un CSV con el bit de cada ventana | |
+| `--diagnostico` | ruta de un CSV con el bit de cada ventana: al codificar `ventana,bit` (-1 si va sin eco), al decodificar `ventana,bit,r0,r1,rms` | |
 | `--ayuda` | muestra el uso | |
 
 - Se acepta `--opcion valor` y `--opcion=valor`, antes o después de los archivos;
@@ -137,11 +147,15 @@ Los archivos deben ser WAV PCM de 16 bits, 44.1 kHz, estéreo.
 - Si una opción se repite, vale la última (R9). Una opción desconocida (R7) o un
   valor inválido termina el programa con un mensaje y el uso.
 - La atenuación p es la amplitud del eco: el filtro del bit b es
-  H_b(z) = 1 + (p_b/100) z^(-t_b) (interpretación de R22, pendiente de confirmar).
+  H_b(z) = 1 + (p_b/100) z^(-t_b) (interpretación de R22).
 - Los dos retardos deben dar distinto número de muestras (1 muestra = 22.68 us).
-- Al codificar, el archivo de salida no puede ser el mismo de entrada.
-- Los metadatos se repiten hasta llenar el audio. Si no caben ni una vez, se
-  codifica lo que cabe y se avisa en la salida de error cuántos bits se perdieron.
+- Al codificar, el archivo de salida no puede ser el mismo de entrada, tampoco
+  escrito de otra forma (`a.wav` y `./a.wav`); `--diagnostico` no puede ser
+  ninguno de los dos.
+- Los metadatos se repiten hasta llenar el audio, y al decodificar se vota bit a
+  bit entre las copias (O2). Si no caben ni una vez, se codifica lo que cabe y se
+  avisa en la salida de error cuántos bits se perdieron. Las ventanas en silencio
+  digital no llevan bit.
 - Al decodificar, cada metadato se imprime en la salida estándar
   (`Título: Canción`, R48, R49). Los metadatos desconocidos o dañados se avisan
   en la salida de error (R50, R51, sección 4.3.4), por ejemplo
@@ -155,11 +169,21 @@ error de uso.
 ## Experimentos y artículo
 
 ```bash
-make datos          # regenera los fragmentos WAV de prueba
-make experimentos   # PESQ, tasa de recuperación y sus correlaciones
+make datos          # descarga los originales y regenera los WAV que falten
+make experimentos   # corre prototipo/experimentos_*.py (unos 30 s)
 make articulo       # compila el artículo en articulo/build/
 make pdf            # copia el PDF de entrega a articulo/articulo.pdf
 ```
+
+| Experimento | Qué mide | Resultados |
+|---|---|---|
+| `experimentos_recuperacion.py` | tasa de recuperación según la atenuación, los retardos y el género; archivos sin codificar (A29, A32, R46, R47) | `resultados/recuperacion_*.csv` |
+| `experimentos_votacion.py` | metadatos recuperados con y sin votación (O2) | `resultados/votacion.csv` |
+| `experimentos_calidad.py` | PESQ y recuperación con `bin/ecoesteg`, y sus correlaciones (R32, A28, A30, A31) | `resultados/calidad_*.csv` |
+
+`prototipo/ajuste_parametros.py` busca los valores por defecto (R18) en tramos que
+no son los de `datos/`; tarda unos 7 minutos y no lo corre `make experimentos`
+(`resultados/ajuste_parametros.csv`).
 
 ## Limpieza
 
