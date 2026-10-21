@@ -1,2 +1,4 @@
 # generado por prototipo/vectores_notificacion.py, semilla 7, tipo=texto
-ADVERTENCIA: no se encontraron metadatos
+ADVERTENCIA: metadato desconocido (dañado): Ñandú y los Pingüifos
+ADVERTENCIA: metadato desconocido (dañado): Álbum ??fico
+ADVERTENCIA: metadato desconocido (dañado): Zoë
