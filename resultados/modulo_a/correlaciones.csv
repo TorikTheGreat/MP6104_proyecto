@@ -1,0 +1,7 @@
+ventana,bit,retardo_esperado,retardo_detectado,coincide
+1,1,88,88,True
+2,0,44,44,True
+3,1,88,88,True
+4,1,88,88,True
+5,0,44,44,True
+6,1,88,88,True
