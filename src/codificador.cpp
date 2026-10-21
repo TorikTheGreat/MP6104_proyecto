@@ -146,10 +146,8 @@ vector<double> codificar_eco(const vector<int16_t>& x, const string& bits,
         bits.find_first_not_of("01") != string::npos)
         throw runtime_error("Mensaje binario invalido o demasiado largo");
 
-    // Conservar el audio original y reservar la cola de convolucion.
+    // Salida en ceros, con espacio para la cola de la ultima convolucion.
     vector<double> salida(x.size() + maxD, 0.0);
-    for (size_t i = 0; i < x.size(); ++i)
-        salida[i] = static_cast<double>(x[i]);
 
     for (size_t b = 0; b < bits.size(); ++b) {
         const size_t D = bits[b] == '0' ? D0 : D1;
@@ -170,14 +168,14 @@ vector<double> codificar_eco(const vector<int16_t>& x, const string& bits,
                 y[n + k] += muestra * h[k];
         }
 
-        // Solapamiento y suma. Se descuenta la señal directa
-        // porque ya se copio a la salida.
-        for (size_t n = 0; n < y.size(); ++n) {
-            const double directo =
-                n < ventana ? static_cast<double>(x[inicio + n]) : 0.0;
-            salida[inicio + n] += y[n] - directo;
-        }
+        // Solapamiento y suma: la cola de cada ventana se suma a la siguiente.
+        for (size_t n = 0; n < y.size(); ++n)
+            salida[inicio + n] += y[n];
     }
+
+    // El audio despues de la ultima ventana con bit se copia sin cambios.
+    for (size_t i = bits.size() * ventana; i < x.size(); ++i)
+        salida[i] += static_cast<double>(x[i]);
 
     return salida;
 }
