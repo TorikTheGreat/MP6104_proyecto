@@ -1,0 +1,17 @@
+archivo,genero,retardo0_us,retardo1_us,tasa_bps,pesq,snr_db,recuperacion,metadatos
+clasica_vivaldi.wav,Clásica,500,750,53.45,4.323,10.45,96.35,1
+clasica_vivaldi.wav,Clásica,750,1000,40.09,4.301,10.46,98.63,1
+clasica_vivaldi.wav,Clásica,1000,1500,26.73,4.243,10.46,93.82,1
+clasica_vivaldi.wav,Clásica,1500,2000,20.05,4.284,10.48,92.5,1
+ragtime_joplin.wav,Ragtime,500,750,53.45,4.277,10.45,94.67,1
+ragtime_joplin.wav,Ragtime,750,1000,40.09,4.334,10.46,97.13,1
+ragtime_joplin.wav,Ragtime,1000,1500,26.73,4.161,10.46,95.69,0
+ragtime_joplin.wav,Ragtime,1500,2000,20.05,4.293,10.47,94.5,0
+jazz_park.wav,Jazz,500,750,53.45,3.481,10.45,91.49,0
+jazz_park.wav,Jazz,750,1000,40.09,3.553,10.45,93.63,0
+jazz_park.wav,Jazz,1000,1500,26.73,3.729,10.46,96.82,1
+jazz_park.wav,Jazz,1500,2000,20.05,3.824,10.46,95.25,0
+electronica_sintetica.wav,Electrónica (sintética),500,750,53.45,nan,10.45,100.0,3
+electronica_sintetica.wav,Electrónica (sintética),750,1000,40.09,nan,10.46,100.0,3
+electronica_sintetica.wav,Electrónica (sintética),1000,1500,26.73,nan,10.46,100.0,3
+electronica_sintetica.wav,Electrónica (sintética),1500,2000,20.05,nan,10.47,100.0,3
