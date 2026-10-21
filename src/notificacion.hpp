@@ -20,7 +20,9 @@ prototipo/vectores_notificacion.py.
 
 namespace notificacion {
 
-// Cada byte que no forma parte de una secuencia UTF-8 válida se cambia por "?".
+// Cada byte que no forma parte de una secuencia UTF-8 válida, y cada carácter de
+// control, se cambia por "?": un registro dañado no puede partir la línea ni
+// cambiar la terminal.
 std::string texto_visible(const std::string& datos);
 
 // Líneas para la salida estándar (first) y para la de error (second). Lanza

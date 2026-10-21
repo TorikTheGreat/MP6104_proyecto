@@ -2,9 +2,11 @@
 
 #include <algorithm>
 #include <exception>
+#include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <locale>
+#include <optional>
 #include <stdexcept>
 #include <utility>
 #include <variant>
@@ -36,6 +38,25 @@ std::vector<std::int16_t> a_16_bits(const std::vector<double>& y) {
     return z;
 }
 
+// La misma ruta, o dos rutas al mismo archivo (a.wav y ./a.wav).
+bool mismo_archivo(const std::string& a, const std::string& b) {
+    if (a == b) return true;
+    std::error_code e;
+    const bool mismo = std::filesystem::equivalent(a, b, e);
+    return !e && mismo;  // con error, alguno no existe todavía
+}
+
+// Que codificar no pise la entrada, ni --diagnostico la entrada o la salida.
+void comprobar_rutas(const lc::Configuracion& c) {
+    const bool codifica = c.modo == lc::Modo::codificar;
+    if (codifica && mismo_archivo(c.entrada, c.salida))
+        throw std::runtime_error("SALIDA.wav es el mismo archivo que ENTRADA.wav");
+    if (c.diagnostico && (mismo_archivo(*c.diagnostico, c.entrada) ||
+                          (codifica && mismo_archivo(*c.diagnostico, c.salida))))
+        throw std::runtime_error("--diagnostico no puede ser el archivo de entrada ni el de salida");
+}
+
+// Se abre antes de escribir el WAV, para no dejar un WAV escrito si falla.
 std::ofstream abrir_csv(const std::string& ruta) {
     std::ofstream f(ruta);
     if (!f) throw std::runtime_error("no se pudo escribir " + ruta);
@@ -43,21 +64,25 @@ std::ofstream abrir_csv(const std::string& ruta) {
     return f;
 }
 
-// --diagnostico al codificar: el bit de cada ventana (-1 si va sin eco).
-void diagnostico_codificacion(const std::string& ruta, const std::vector<int>& bits) {
-    std::ofstream f = abrir_csv(ruta);
-    f << "ventana,bit\n";
-    for (std::size_t k = 0; k < bits.size(); ++k) f << k << ',' << bits[k] << '\n';
+void cerrar_csv(std::ofstream& f, const std::string& ruta) {
+    f.close();
     if (!f) throw std::runtime_error("no se pudo escribir " + ruta);
 }
 
+// --diagnostico al codificar: el bit de cada ventana (-1 si va sin eco).
+void diagnostico_codificacion(std::ofstream& f, const std::string& ruta, const std::vector<int>& bits) {
+    f << "ventana,bit\n";
+    for (std::size_t k = 0; k < bits.size(); ++k) f << k << ',' << bits[k] << '\n';
+    cerrar_csv(f, ruta);
+}
+
 // --diagnostico al decodificar: la clasificación de cada ventana (A29).
-void diagnostico_decodificacion(const std::string& ruta, const std::vector<Ventana>& ventanas) {
-    std::ofstream f = abrir_csv(ruta);
+void diagnostico_decodificacion(std::ofstream& f, const std::string& ruta,
+                                const std::vector<Ventana>& ventanas) {
     f << std::setprecision(17) << "ventana,bit,r0,r1,rms\n";
     for (const auto& v : ventanas)
         f << v.indice << ',' << v.bit << ',' << v.r0 << ',' << v.r1 << ',' << v.rms << '\n';
-    if (!f) throw std::runtime_error("no se pudo escribir " + ruta);
+    cerrar_csv(f, ruta);
 }
 
 Eco eco_desde(const lc::Configuracion& c) {
@@ -70,7 +95,7 @@ Eco eco_desde(const lc::Configuracion& c) {
 }
 
 int codificar(const lc::Configuracion& c, const Audio& audio, bool izquierdo, const Eco& eco,
-              std::ostream& error, const Bloques& bloques) {
+              std::ostream& error, const Bloques& bloques, std::ofstream* csv) {
     const auto& canal = izquierdo ? audio.izquierdo : audio.derecho;
     const auto lleva_bit = ventanas_con_bit(canal, c.metadatos, eco, bloques);
     const auto disponibles =
@@ -90,17 +115,18 @@ int codificar(const lc::Configuracion& c, const Audio& audio, bool izquierdo, co
             error << linea << '\n';
     if (recortes > 0)
         error << "ADVERTENCIA: " << recortes << " muestras se saturaron al escribir el audio\n";
-    if (c.diagnostico) diagnostico_codificacion(*c.diagnostico, bits);
+    if (csv) diagnostico_codificacion(*csv, *c.diagnostico, bits);
     return lc::EXITO;
 }
 
 int decodificar(const lc::Configuracion& c, const Audio& audio, bool izquierdo, const Eco& eco,
-                std::ostream& salida, std::ostream& error, const Bloques& bloques) {
+                std::ostream& salida, std::ostream& error, const Bloques& bloques,
+                std::ofstream* csv) {
     const Decodificacion d = bloques.decodificar(izquierdo ? audio.izquierdo : audio.derecho, eco);
     const auto [lineas, avisos] = notificacion::notificar(metadatos::desde_bits(d.bits));
     for (const auto& l : lineas) salida << l << '\n';
     for (const auto& l : avisos) error << l << '\n';
-    if (c.diagnostico) diagnostico_decodificacion(*c.diagnostico, d.ventanas);
+    if (csv) diagnostico_decodificacion(*csv, *c.diagnostico, d.ventanas);
     return lc::EXITO;
 }
 
@@ -151,10 +177,14 @@ int ejecutar(const std::vector<std::string>& args, std::ostream& salida, std::os
     }
     try {
         const Eco eco = eco_desde(c);
+        comprobar_rutas(c);
+        std::optional<std::ofstream> csv;
+        if (c.diagnostico) csv.emplace(abrir_csv(*c.diagnostico));
+        std::ofstream* f = csv ? &*csv : nullptr;
         const Audio audio = bloques.leer(c.entrada);
         const bool izquierdo = c.canal == "izquierdo";
-        if (c.modo == lc::Modo::codificar) return codificar(c, audio, izquierdo, eco, error, bloques);
-        return decodificar(c, audio, izquierdo, eco, salida, error, bloques);
+        if (c.modo == lc::Modo::codificar) return codificar(c, audio, izquierdo, eco, error, bloques, f);
+        return decodificar(c, audio, izquierdo, eco, salida, error, bloques, f);
     } catch (const std::exception& e) {
         error << "error: " << e.what() << '\n';
         return lc::ERROR_EJECUCION;

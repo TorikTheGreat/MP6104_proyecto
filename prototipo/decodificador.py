@@ -25,6 +25,9 @@ UMBRAL_SILENCIO = 1e-5
 UMBRAL_ECO = 0.70
 EPSILON_ESPECTRO = 1e-6
 FRACCION_MIN_VENTANAS_CON_ECO = 0.25
+# r0 y r1 a menos de esto (relativo) son un empate: en una ventana casi vacía son
+# ruido de redondeo, distinto en cada FFT, y el bit no debe depender de eso.
+TOLERANCIA_EMPATE = 1e-9
 
 
 @dataclass
@@ -40,6 +43,10 @@ class DiagnosticoVentana:
 class ResultadoDecodificacion:
     bits: list[int]
     ventanas: list[DiagnosticoVentana]
+
+
+def empate(r0: float, r1: float) -> bool:
+    return abs(r0 - r1) <= TOLERANCIA_EMPATE * max(1.0, abs(r0), abs(r1))
 
 
 def potencia_de_2_siguiente(n: int) -> int:
@@ -123,7 +130,7 @@ def evaluar_ventana(
     r0 = float(rcc[d0])
     r1 = float(rcc[d1])
     pico = max(r0, r1)
-    if pico < umbral_eco or r0 == r1:
+    if pico < umbral_eco or empate(r0, r1):
         bit = SIN_ECO
     elif r0 > r1:
         bit = 0
@@ -195,7 +202,7 @@ def decodificar_senal(
         v = ventanas[k]
         if v.rms <= UMBRAL_SILENCIO:
             continue
-        bits.append(0 if v.r0 >= v.r1 else 1)
+        bits.append(0 if empate(v.r0, v.r1) or v.r0 > v.r1 else 1)
 
     return ResultadoDecodificacion(bits=bits, ventanas=ventanas)
 

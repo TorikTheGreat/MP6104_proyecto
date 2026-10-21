@@ -37,6 +37,7 @@ class PruebasNotificar(unittest.TestCase):
             b"\xf4\x90\x80\x80": "????",   # mayor que U+10FFFF
             b"\xf0\x9f\x8e\xb5x": "\U0001F3B5x",
             b"\x80": "?",
+            b"a\nb\x1b[31mc\x7f": "a?b?[31mc?",  # caracteres de control
         }
         for datos, esperado in casos.items():
             self.assertEqual(n.texto_visible(datos), esperado, datos)

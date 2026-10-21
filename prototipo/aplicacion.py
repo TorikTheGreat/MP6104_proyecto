@@ -125,13 +125,44 @@ def _eco_desde(c: lc.Configuracion) -> Eco:
                p.amplitud_desde_porcentaje(a0), p.amplitud_desde_porcentaje(a1))
 
 
-def _escribir_csv(ruta: bytes, lineas: list[str]) -> None:
-    with open(ruta, "w", encoding="utf-8") as f:
+def _mismo_archivo(a: bytes, b: bytes) -> bool:
+    """La misma ruta, o dos rutas al mismo archivo (a.wav y ./a.wav)."""
+    if a == b:
+        return True
+    try:
+        return os.path.samefile(a, b)
+    except OSError:  # alguno no existe todavía
+        return False
+
+
+def _comprobar_rutas(c: lc.Configuracion) -> None:
+    """Que codificar no pise la entrada, ni --diagnostico la entrada o la salida."""
+    if c.modo == "codificar" and _mismo_archivo(c.entrada, c.salida):
+        raise RuntimeError("SALIDA.wav es el mismo archivo que ENTRADA.wav")
+    if c.diagnostico is not None and (
+            _mismo_archivo(c.diagnostico, c.entrada)
+            or (c.modo == "codificar" and _mismo_archivo(c.diagnostico, c.salida))):
+        raise RuntimeError("--diagnostico no puede ser el archivo de entrada ni el de salida")
+
+
+def _abrir_csv(ruta: bytes) -> TextIO:
+    """Se abre antes de escribir el WAV, para no dejar un WAV escrito si falla."""
+    try:
+        return open(ruta, "w", encoding="utf-8")
+    except OSError as e:
+        raise RuntimeError(f"no se pudo escribir {os.fsdecode(ruta)}") from e
+
+
+def _escribir_csv(f: TextIO, lineas: list[str]) -> None:
+    try:
         f.writelines(linea + "\n" for linea in lineas)
+        f.close()
+    except OSError as e:
+        raise RuntimeError(f"no se pudo escribir {os.fsdecode(f.name)}") from e
 
 
 def _codificar(c: lc.Configuracion, audio: Audio, izquierdo: bool, eco: Eco,
-               error: TextIO, bloques: Bloques) -> int:
+               error: TextIO, bloques: Bloques, csv: TextIO | None) -> int:
     canal = audio.izquierdo if izquierdo else audio.derecho
     lleva_bit = ventanas_con_bit(canal, c.metadatos, eco, bloques)
     cod = m.a_bits(c.metadatos, sum(lleva_bit))
@@ -144,21 +175,21 @@ def _codificar(c: lc.Configuracion, audio: Audio, izquierdo: bool, eco: Eco,
             print(linea, file=error)
     if recortes:
         print(f"ADVERTENCIA: {recortes} muestras se saturaron al escribir el audio", file=error)
-    if c.diagnostico is not None:
-        _escribir_csv(c.diagnostico, ["ventana,bit"] + [f"{k},{b}" for k, b in enumerate(bits)])
+    if csv is not None:
+        _escribir_csv(csv, ["ventana,bit"] + [f"{k},{b}" for k, b in enumerate(bits)])
     return lc.EXITO
 
 
 def _decodificar(c: lc.Configuracion, audio: Audio, izquierdo: bool, eco: Eco,
-                 salida: TextIO, error: TextIO, bloques: Bloques) -> int:
+                 salida: TextIO, error: TextIO, bloques: Bloques, csv: TextIO | None) -> int:
     d = bloques.decodificar(audio.izquierdo if izquierdo else audio.derecho, eco)
     lineas, avisos = n.notificar(m.desde_bits(d.bits))
     for linea in lineas:
         print(linea, file=salida)
     for linea in avisos:
         print(linea, file=error)
-    if c.diagnostico is not None:
-        _escribir_csv(c.diagnostico, ["ventana,bit,r0,r1,rms"] + [
+    if csv is not None:
+        _escribir_csv(csv, ["ventana,bit,r0,r1,rms"] + [
             f"{v.indice},{v.bit},{v.r0:.17g},{v.r1:.17g},{v.rms:.17g}" for v in d.ventanas])
     return lc.EXITO
 
@@ -175,11 +206,17 @@ def ejecutar(args: Sequence[bytes], salida: TextIO, error: TextIO, bloques: Bloq
         return lc.EXITO
     try:
         eco = _eco_desde(c)
-        audio = bloques.leer(c.entrada)
-        izquierdo = c.canal == "izquierdo"
-        if c.modo == "codificar":
-            return _codificar(c, audio, izquierdo, eco, error, bloques)
-        return _decodificar(c, audio, izquierdo, eco, salida, error, bloques)
+        _comprobar_rutas(c)
+        csv = _abrir_csv(c.diagnostico) if c.diagnostico is not None else None
+        try:
+            audio = bloques.leer(c.entrada)
+            izquierdo = c.canal == "izquierdo"
+            if c.modo == "codificar":
+                return _codificar(c, audio, izquierdo, eco, error, bloques, csv)
+            return _decodificar(c, audio, izquierdo, eco, salida, error, bloques, csv)
+        finally:
+            if csv is not None and not csv.closed:
+                csv.close()
     except Exception as e:  # todo error de ejecución sale con código 1
         print(f"error: {e}", file=error)
         return lc.ERROR_EJECUCION
@@ -207,6 +244,7 @@ def leer_wav(ruta: bytes) -> Audio:
             crudo = w.readframes(w.getnframes())
     except (OSError, EOFError, wave.Error) as e:
         raise RuntimeError(f"No se pudo abrir: {os.fsdecode(ruta)}") from e
+    crudo = crudo[:len(crudo) // 4 * 4]  # solo muestras completas, si el archivo está cortado
     estereo = np.frombuffer(crudo, dtype="<i2").reshape(-1, 2)
     return Audio(estereo[:, 0].copy(), estereo[:, 1].copy())
 

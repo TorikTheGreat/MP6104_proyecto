@@ -61,12 +61,13 @@ def estimar_periodo(bits: Sequence[int]) -> int | None:
     candidato = next(periodo for periodo, c, t in puntajes  # c/t >= c_max/t_max - margen
                      if 1000 * c * t_max >= 1000 * c_max * t - MARGEN_MILESIMAS * t * t_max)
     mejor, c_mejor, t_mejor = candidato, -1, 1
-    for periodo in range(candidato, min(candidato + 2 * DERIVA_MAX, n // MIN_COPIAS) + 1):
+    for periodo in range(candidato, min(candidato + 2 * DERIVA_MAX, n - 1) + 1):
         c = int(np.count_nonzero(b[:-periodo] == b[periodo:]))
         t = n - periodo
         if c * t_mejor > c_mejor * t:  # en un empate, el menor
             mejor, c_mejor, t_mejor = periodo, c, t
-    return mejor
+    # La tolerancia deja pasar un P - 4 con menos de MIN_COPIAS copias del P real.
+    return mejor if MIN_COPIAS * mejor <= n else None
 
 
 def _votar(bits: Sequence[int], inicios: Sequence[int], periodo: int) -> Bits:

@@ -58,7 +58,7 @@ std::vector<Lectura> leer_votada(const Bits& bits) {
     dos_veces.insert(dos_veces.end(), votada->begin(), votada->end());
     std::vector<Lectura> lecturas;
     for (const auto& l : formato::leer(dos_veces))
-        if (std::find(lecturas.begin(), lecturas.end(), l) == lecturas.end())
+        if (l.tipo == Tipo::valido && std::find(lecturas.begin(), lecturas.end(), l) == lecturas.end())
             lecturas.push_back(l);
     return lecturas;
 }

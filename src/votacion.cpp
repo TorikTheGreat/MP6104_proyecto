@@ -123,7 +123,7 @@ std::optional<std::size_t> estimar_periodo(const Bits& b) {
     std::size_t mejor = candidato;
     long long c_mejor = -1;
     long long t_mejor = 1;
-    const std::size_t fin = std::min(candidato + 2 * DERIVA_MAX, n / MIN_COPIAS);
+    const std::size_t fin = std::min(candidato + 2 * DERIVA_MAX, n - 1);
     for (std::size_t periodo = candidato; periodo <= fin; ++periodo) {
         long long c = 0;
         for (std::size_t i = 0; i + periodo < n; ++i) c += b[i] == b[i + periodo];
@@ -134,6 +134,8 @@ std::optional<std::size_t> estimar_periodo(const Bits& b) {
             t_mejor = t;
         }
     }
+    // La tolerancia deja pasar un P - 4 con menos de MIN_COPIAS copias del P real.
+    if (MIN_COPIAS * mejor > n) return std::nullopt;
     return mejor;
 }
 

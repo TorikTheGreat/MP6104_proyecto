@@ -37,7 +37,7 @@ Audio leer_wav(const string& ruta) {
     if (!f.read(reinterpret_cast<char*>(cab), 12) || memcmp(cab, "RIFF", 4) || memcmp(cab + 8, "WAVE", 4))
         throw runtime_error("El archivo no es RIFF/WAVE valido");
     bool hay_fmt = false, hay_data = false;
-    uint16_t formato = 0, canales = 0, bits = 0, alineacion = 0;
+    uint16_t formato = 0, canales = 0, bits = 0;
     uint32_t fs = 0, tamano_data = 0;
     streampos posicion_data = streampos(-1);
     while (true) {
@@ -47,12 +47,14 @@ Audio leer_wav(const string& ruta) {
         streampos inicio = f.tellg();
         if (memcmp(bloque, "fmt ", 4) == 0) {
             if (tamano < 16) throw runtime_error("Bloque fmt demasiado corto");
-            unsigned char fmt[16];
-            if (!f.read(reinterpret_cast<char*>(fmt), 16)) throw runtime_error("No se pudo leer fmt");
+            unsigned char fmt[40] = {};
+            const uint32_t a_leer = min<uint32_t>(tamano, 40);
+            if (!f.read(reinterpret_cast<char*>(fmt), a_leer)) throw runtime_error("No se pudo leer fmt");
             formato = leer_u16(fmt);
+            // WAVE_FORMAT_EXTENSIBLE: el formato real son los 2 primeros bytes del SubFormat.
+            if (formato == 0xFFFE && a_leer == 40) formato = leer_u16(fmt + 24);
             canales = leer_u16(fmt + 2);
             fs = leer_u32(fmt + 4);
-            alineacion = leer_u16(fmt + 12);
             bits = leer_u16(fmt + 14);
             hay_fmt = true;
         } else if (memcmp(bloque, "data", 4) == 0) {
@@ -66,11 +68,14 @@ Audio leer_wav(const string& ruta) {
         if (hay_fmt && hay_data) break;
     }
     if (!hay_fmt || !hay_data) throw runtime_error("Falta bloque fmt o data");
-    if (formato != 1 || canales != 2 || fs != 44100 || bits != 16 || alineacion != 4)
+    if (formato != 1 || canales != 2 || fs != 44100 || bits != 16)
         throw runtime_error("Se requiere WAV PCM 16 bits, estereo, 44100 Hz");
-    if (tamano_data == 0 || tamano_data % 4 != 0)
-        throw runtime_error("Tamano del bloque data invalido");
-    const size_t n = tamano_data / 4;
+    // El tamaño declarado puede ser mayor que el archivo (ffmpeg por tubería escribe
+    // 0xFFFFFFFF): se leen las muestras completas que hay de verdad.
+    f.clear();
+    f.seekg(0, ios::end);
+    const auto disponibles = static_cast<uint64_t>(f.tellg() - posicion_data);
+    const size_t n = static_cast<size_t>(min<uint64_t>(tamano_data, disponibles) / 4);
     Audio audio;
     audio.fs = fs;
     audio.izquierdo.resize(n);

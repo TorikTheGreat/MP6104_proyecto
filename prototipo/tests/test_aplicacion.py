@@ -6,6 +6,7 @@ reales sobre un WAV sintético.
 
 import io
 import os
+import struct
 import tempfile
 import unittest
 
@@ -169,6 +170,13 @@ class PruebasDecodificar(unittest.TestCase):
             with open(csv, encoding="utf-8") as archivo:
                 self.assertEqual(archivo.read(), "ventana,bit,r0,r1,rms\n0,1,0,1,1\n1,0,1,0,1\n")
 
+    def test_diagnostico_no_puede_ser_la_entrada(self):
+        f = Falsos()
+        f.archivos[b"c.wav"] = audio(10)
+        codigo, _, error = correr(["c.wav", "--diagnostico", "c.wav"], f.bloques())
+        self.assertEqual(codigo, lc.ERROR_EJECUCION)
+        self.assertIn("--diagnostico no puede ser", error)
+
     def test_diagnostico_en_ruta_invalida(self):
         f = Falsos()
         f.archivos[b"c.wav"] = audio(10)
@@ -196,6 +204,29 @@ class PruebasPuntaAPunta(unittest.TestCase):
             # El otro canal queda como estaba (R26), y un archivo sin codificar no da nada.
             self.assertEqual(correr([codificado, "--canal", "derecho"], reales)[1], "")
             self.assertEqual(correr([original], reales)[1], "")
+            # La misma salida que la entrada, escrita distinto: no se pisa el original.
+            antes = open(original, "rb").read()
+            otra_forma = os.path.join(d, ".", "original.wav").encode()
+            codigo, _, error = correr([original, otra_forma, "--titulo", "x"], reales)
+            self.assertEqual(codigo, lc.ERROR_EJECUCION)
+            self.assertIn("mismo archivo", error)
+            self.assertEqual(open(original, "rb").read(), antes)
+
+    def test_wav_extensible_y_tamano_de_datos_de_mas(self):
+        # WAVE_FORMAT_EXTENSIBLE con PCM, y un bloque data que dice ser más largo
+        # que el archivo (como la salida de ffmpeg por tubería).
+        muestras = np.arange(-50, 50, dtype="<i2")
+        guid_pcm = bytes.fromhex("0100000000001000800000aa00389b71")
+        fmt = struct.pack("<HHIIHHHHI", 0xFFFE, 2, 44100, 44100 * 4, 4, 16, 22, 16, 3) + guid_pcm
+        cuerpo = (b"WAVEfmt " + struct.pack("<I", len(fmt)) + fmt + b"data"
+                  + struct.pack("<I", 0xFFFFFFFF) + muestras.tobytes() + b"\x01")
+        with tempfile.TemporaryDirectory() as d:
+            ruta = os.path.join(d, "ext.wav")
+            with open(ruta, "wb") as archivo:
+                archivo.write(b"RIFF" + struct.pack("<I", 0xFFFFFFFF) + cuerpo)
+            a = ap.leer_wav(ruta.encode())
+        self.assertEqual(list(a.izquierdo), list(muestras[0::2]))
+        self.assertEqual(list(a.derecho), list(muestras[1::2]))
 
 
 if __name__ == "__main__":

@@ -230,6 +230,14 @@ PRUEBA(aplicacion_diagnostico_al_decodificar) {
     std::remove(csv.c_str());
 }
 
+PRUEBA(aplicacion_diagnostico_no_puede_ser_la_entrada) {
+    auto reg = std::make_shared<Registro>();
+    reg->archivos["c.wav"] = audio_con_sonido(10);
+    const auto r = correr({"c.wav", "--diagnostico", "c.wav"}, falsos(reg));
+    VERIFICAR_IGUAL(r.codigo, lc::ERROR_EJECUCION);
+    VERIFICAR(contiene(r.error, "--diagnostico no puede ser"));
+}
+
 PRUEBA(aplicacion_diagnostico_en_ruta_invalida) {
     auto reg = std::make_shared<Registro>();
     reg->archivos["c.wav"] = audio_con_sonido(10);
@@ -306,6 +314,43 @@ PRUEBA(aplicacion_punta_a_punta_con_wav_sintetico) {
     VERIFICAR(correr({codificado, "--canal", "derecho"}, reales).salida.empty());
     // Un archivo sin codificar no da metadatos.
     VERIFICAR(correr({original}, reales).salida.empty());
+    // La misma salida que la entrada, escrita distinto: no se pisa el original.
+    const std::string antes = leer_archivo(original);
+    const std::string otra_forma =
+        (std::filesystem::path(original).parent_path() / "." /
+         std::filesystem::path(original).filename()).string();
+    const auto r = correr({original, otra_forma, "--titulo", "x"}, reales);
+    VERIFICAR_IGUAL(r.codigo, lc::ERROR_EJECUCION);
+    VERIFICAR(contiene(r.error, "mismo archivo"));
+    VERIFICAR(leer_archivo(original) == antes);
     std::remove(original.c_str());
     std::remove(codificado.c_str());
+}
+
+PRUEBA(aplicacion_wav_extensible_y_tamano_de_datos_de_mas) {
+    // WAVE_FORMAT_EXTENSIBLE con PCM, y un bloque data que dice ser más largo que el
+    // archivo (como la salida de ffmpeg por tubería).
+    std::string fmt;
+    const auto u16 = [](std::string& s, unsigned v) { s += static_cast<char>(v & 255); s += static_cast<char>(v >> 8); };
+    const auto u32 = [&](std::string& s, unsigned long v) { u16(s, v & 0xFFFF); u16(s, (v >> 16) & 0xFFFF); };
+    u16(fmt, 0xFFFE); u16(fmt, 2); u32(fmt, 44100); u32(fmt, 44100 * 4); u16(fmt, 4); u16(fmt, 16);
+    u16(fmt, 22); u16(fmt, 16); u32(fmt, 3);
+    fmt += std::string("\x01\x00\x00\x00\x00\x00\x10\x00\x80\x00\x00\xaa\x00\x38\x9b\x71", 16);
+    std::string datos;
+    for (int m = -50; m < 50; ++m) u16(datos, static_cast<unsigned>(m) & 0xFFFF);
+    std::string wav = "RIFF";
+    u32(wav, 0xFFFFFFFF);
+    wav += "WAVEfmt ";
+    u32(wav, fmt.size());
+    wav += fmt + "data";
+    u32(wav, 0xFFFFFFFF);
+    wav += datos + std::string(1, '\x01');
+    const std::string ruta = temporal("extensible.wav");
+    std::ofstream(ruta, std::ios::binary) << wav;
+    const Audio a = aplicacion::bloques_reales().leer(ruta);
+    REQUERIR(a.izquierdo.size() == 50);
+    VERIFICAR_IGUAL(a.izquierdo[0], -50);
+    VERIFICAR_IGUAL(a.derecho[0], -49);
+    VERIFICAR_IGUAL(a.derecho[49], 49);
+    std::remove(ruta.c_str());
 }

@@ -67,15 +67,16 @@ def a_bits(metadatos: Metadatos, n_ventanas: int) -> Codificacion:
 
 
 def leer_votada(bits: Sequence[int]) -> list[Lectura]:
-    """Registros de la copia votada, cada uno una vez. La copia se lee dos veces
-    seguidas porque es cíclica: un registro puede empezar al final y seguir al
-    principio."""
+    """Registros válidos de la copia votada, cada uno una vez. La copia se lee dos
+    veces seguidas porque es cíclica: un registro puede empezar al final y seguir
+    al principio. Solo los válidos: los dañados de la copia votada no agregan nada
+    a los de la lectura directa, y pueden ser de categorías que no se codificaron."""
     votada = votacion.votar_copias(bits)
     if votada is None:
         return []
     lecturas: list[Lectura] = []
     for lectura in formato().leer(votada + votada):
-        if lectura not in lecturas:
+        if lectura[0] == VALIDO and lectura not in lecturas:
             lecturas.append(lectura)
     return lecturas
 

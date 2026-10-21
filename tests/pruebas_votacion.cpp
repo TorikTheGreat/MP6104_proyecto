@@ -77,6 +77,15 @@ PRUEBA(votacion_sin_tres_copias_no_hay_periodo) {
     VERIFICAR(!v::estimar_periodo(bits));
 }
 
+PRUEBA(votacion_casi_tres_copias_no_tiene_periodo) {
+    // Con la tolerancia, P - 4 parecería periódico; no hay tres copias de P.
+    for (std::size_t falta : {1, 6, 12}) {
+        Bits bits = veces(COPIA, 3);
+        bits.resize(bits.size() - falta);
+        VERIFICAR(!v::estimar_periodo(bits));
+    }
+}
+
 PRUEBA(votacion_bits_aleatorios_no_tienen_periodo) {
     std::mt19937 rng(3);
     for (int k = 0; k < 5; ++k) {
@@ -114,6 +123,13 @@ PRUEBA(votacion_gana_la_mayoria_aunque_la_primera_copia_este_mal) {
     Bits bits;
     for (const auto& c : copias) bits.insert(bits.end(), c.begin(), c.end());
     VERIFICAR(v::votar_copias(bits) == COPIA);
+}
+
+PRUEBA(votacion_la_copia_votada_solo_aporta_validos) {
+    const auto entrada = pruebas::leer_enteros("votacion_inversion_5_entrada");
+    const auto lecturas = metadatos::leer_votada(Bits(entrada.begin(), entrada.end()));
+    REQUERIR(!lecturas.empty());
+    for (const auto& l : lecturas) VERIFICAR(l.tipo == trama::Tipo::valido);
 }
 
 PRUEBA(votacion_la_copia_votada_cuenta_una_vez) {

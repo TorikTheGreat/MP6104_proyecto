@@ -20,6 +20,10 @@ std::vector<double> a_reales(const std::vector<std::int16_t>& x) {
 
 }  // namespace
 
+bool empate(double r0, double r1) {
+    return std::abs(r0 - r1) <= TOLERANCIA_EMPATE * std::max({1.0, std::abs(r0), std::abs(r1)});
+}
+
 double rms_ventana(const std::vector<double>& ventana) {
     if (ventana.empty()) {
         throw std::invalid_argument("rms_ventana: la ventana no puede estar vacía");
@@ -119,7 +123,7 @@ DiagnosticoVentana evaluar_ventana(const std::vector<double>& ventana, std::size
     const double r1 = rcc[d1];
     const double pico = std::max(r0, r1);
     int bit = SIN_ECO;
-    if (pico >= umbral_eco && r0 != r1) {
+    if (pico >= umbral_eco && !empate(r0, r1)) {
         bit = (r0 > r1) ? 0 : 1;
     }
     return DiagnosticoVentana{indice, bit, r0, r1, rms};
@@ -200,7 +204,9 @@ ResultadoDecodificacion decodificar_senal(const std::vector<double>& senal, std:
         if (ventanas[k].rms <= UMBRAL_SILENCIO) {
             continue;
         }
-        bits.push_back((ventanas[k].r0 >= ventanas[k].r1) ? 0 : 1);
+        const double r0 = ventanas[k].r0;
+        const double r1 = ventanas[k].r1;
+        bits.push_back((empate(r0, r1) || r0 > r1) ? 0 : 1);
     }
 
     return ResultadoDecodificacion{bits, ventanas};
