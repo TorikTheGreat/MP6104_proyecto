@@ -15,7 +15,6 @@
 #include <vector>
 
 #include "aplicacion.hpp"
-#include "bloques_reales.hpp"
 #include "linea_comandos.hpp"
 #include "metadatos.hpp"
 #include "parametros.hpp"

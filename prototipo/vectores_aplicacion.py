@@ -14,7 +14,6 @@ import tempfile
 import numpy as np
 
 import aplicacion as ap
-import bloques_reales
 from vectores import escribir
 
 SEMILLA = 2026
@@ -37,7 +36,7 @@ def generar(directorio):
     n = VENTANAS * 175
     muestras = ruido(2 * n)
     audio = ap.Audio(np.array(muestras[:n], dtype=np.int16), np.array(muestras[n:], dtype=np.int16))
-    reales = bloques_reales.bloques_reales()
+    reales = ap.bloques_reales()
 
     class Salida:
         def __init__(self):

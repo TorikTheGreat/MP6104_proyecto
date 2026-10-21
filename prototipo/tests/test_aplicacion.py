@@ -12,7 +12,6 @@ import unittest
 import numpy as np
 
 import aplicacion as ap
-import bloques_reales
 import linea_comandos as lc
 import metadatos as m
 from parametros import ANIO, TITULO
@@ -184,7 +183,7 @@ class PruebasPuntaAPunta(unittest.TestCase):
         n = 20 * 44100
         a = ap.Audio(*(np.clip(rng.normal(0, 3000, n), -32768, 32767).astype(np.int16)
                        for _ in range(2)))
-        reales = bloques_reales.bloques_reales()
+        reales = ap.bloques_reales()
         with tempfile.TemporaryDirectory() as d:
             original = os.path.join(d, "original.wav").encode()
             codificado = os.path.join(d, "codificado.wav").encode()

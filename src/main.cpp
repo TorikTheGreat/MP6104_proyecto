@@ -6,7 +6,6 @@
 #include <vector>
 
 #include "aplicacion.hpp"
-#include "bloques_reales.hpp"
 
 int main(int argc, char** argv) {
     const std::vector<std::string> args(argv + 1, argv + argc);

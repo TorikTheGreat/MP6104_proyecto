@@ -11,12 +11,11 @@ import os
 import sys
 
 import aplicacion
-import bloques_reales
 
 
 def main() -> int:
     args = [os.fsencode(a) for a in sys.argv[1:]]
-    return aplicacion.ejecutar(args, sys.stdout, sys.stderr, bloques_reales.bloques_reales())
+    return aplicacion.ejecutar(args, sys.stdout, sys.stderr, aplicacion.bloques_reales())
 
 
 if __name__ == "__main__":

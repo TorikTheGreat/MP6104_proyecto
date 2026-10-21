@@ -2,8 +2,8 @@
 El programa ecoesteg sin los bloques de audio (equivale a prototipo/aplicacion.py):
 lee los argumentos, decide el modo (R28, R39) y une la trama, la votación y la
 notificación con los bloques de A (leer y escribir el WAV, codificar) y de B
-(decodificar), que entran como funciones. main.cpp le pasa los reales (bloques_reales.cpp); las pruebas, unos
-falsos, para probar el flujo sin audio.
+(decodificar), que entran como funciones. main.cpp le pasa los reales
+(bloques_reales()); las pruebas, unos falsos, para probar el flujo sin audio.
 
 Códigos de salida: 0 éxito (también si el mensaje no cupo entero o si no se
 encontraron metadatos), 1 error de ejecución (archivo, formato WAV), 2 error de uso.
@@ -81,6 +81,11 @@ int ejecutar(const std::vector<std::string>& args, std::ostream& salida, std::os
 std::vector<bool> ventanas_con_bit(const std::vector<std::int16_t>& canal,
                                    const trama::Metadatos& metadatos, const Eco& eco,
                                    const Bloques& bloques);
+
+// Los bloques reales: el codificador y la lectura y escritura del WAV de A
+// (codificador.hpp) y el decodificador de B (decodificador.hpp), adaptados a esta
+// interfaz (equivale a bloques_reales() de prototipo/aplicacion.py).
+Bloques bloques_reales();
 
 // Reparte los bits del mensaje en las ventanas que llevan bit; las demás van con -1.
 std::vector<int> bits_por_ventana(const std::vector<int>& mensaje,
