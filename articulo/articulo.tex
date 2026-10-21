@@ -39,7 +39,7 @@
 
 \author{%
   Marco Zolla Salazar,
-  Integrante~A % TODO: nombre (rol A); cada integrante cambia solo su renglón
+  Marcelo Mata Solano
   y~Diego~Martínez%
   \thanks{Maestría en Electrónica, Instituto Tecnológico de Costa Rica.}}
 
@@ -52,13 +52,13 @@
 % Dueño: C. A14: el resumen va en inglés. A15: debe permitir decidir si el artículo es útil.
 \begin{otherlanguage}{english}
 \begin{abstract}
-TODO.
+This paper presents an audio steganography system designed to embed and recover metadata using echo hiding. Binary information is encoded by introducing low-amplitude echoes with two different delays into an audio signal. The encoder was implemented in Python and C++17 using convolution and overlap-add, while the decoder identifies the embedded delays through cepstral autocorrelation analysis. Experimental evaluation considered audio quality, bit recovery, and rejection of unencoded signals across four musical genres. The results show that bit recovery depends on echo attenuation, window length, and the spectral characteristics of the audio. Under the evaluated conditions, electronic music achieved complete bit recovery, whereas classical music presented greater decoding difficulties. Although the system successfully demonstrates metadata embedding and extraction under favorable conditions, additional improvements are required to increase robustness across different audio contents.
 \end{abstract}
 \end{otherlanguage}
 
 % Dueño: C. A13: en orden alfabético. A16: representativas del contenido.
 \begin{IEEEkeywords}
-TODO.
+Audio steganography, cepstral analysis, echo hiding, metadata embedding, signal processing.
 \end{IEEEkeywords}
 
 % Cada archivo de secciones/ tiene un solo dueño (anotado en su primera línea);

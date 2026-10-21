@@ -1,2 +1,25 @@
-% Dueño: A. A21-A23, A28, A32: calidad perceptual (PESQ) y géneros.
-TODO~\cite{itu_p862}.
+\subsection{Calidad de la señal codificada}
+Se comparó el audio original con el audio codificado para evaluar el efecto de la atenuación del eco. Se utilizó un fragmento musical estéreo en PCM de 16 bits, con frecuencia de muestreo de $44.1$ kHz, y se insertó el mensaje $101101$ en el canal izquierdo. Los retardos fueron de $44$ y $88$ muestras y la ventana tuvo una longitud de $2200$ muestras.
+
+\begin{table}[htbp]
+\caption{Resultados de calidad para diferentes atenuaciones}
+\label{tab:atenuaciones}
+\centering
+\begin{tabular}{ccc}
+\hline
+Atenuación & MSE & SNR (dB) \\
+\hline
+$5\,\char37{}$  & $6.5864\times10^{-7}$ & 42.581 \\
+$10\,\char37{}$ & $2.6333\times10^{-6}$ & 36.563 \\
+$15\,\char37{}$ & $5.9242\times10^{-6}$ & 33.041 \\
+$20\,\char37{}$ & $1.0531\times10^{-5}$ & 30.543 \\
+$25\,\char37{}$ & $1.6454\times10^{-5}$ & 28.605 \\
+\hline
+\end{tabular}
+\end{table}
+
+Se observa que, al aumentar la atenuación, crece el error cuadrático medio (MSE) y disminuye la relación señal-ruido (SNR). Con una atenuación del $20\,\char37{}$, el SNR fue de $30.543$ dB. La comparación entre Python y C++17 produjo cero diferencias entre las muestras PCM16 para esta configuración.
+
+También se obtuvo un valor exploratorio PESQ-WB de $4.6002$ tras remuestrear las señales a $16$ kHz. Esta métrica se diseñó para voz, por lo que no constituye una evaluación perceptual validada para el fragmento musical utilizado \cite{itu_p862}.
+
+Los indicadores MSE y SNR se calcularon sobre la grabación completa. Como solamente se insertaron seis bits, gran parte del audio permaneció sin modificar; estos valores no representan necesariamente la calidad al ocupar todas las ventanas disponibles. Quedan pendientes las pruebas con otros géneros musicales y diferentes cargas de información.

@@ -44,17 +44,20 @@ $(1500, 2000)$ & 25 & 2200 & 20.05 & 92.75 \\
 Finalmente, en la Tabla~\ref{tab:sin_codificar} se reporta el comportamiento del decodificador ante los cuatro archivos originales sin codificar. Entre el \SI{82.77}{\percent} y el \SI{94.01}{\percent} de las ventanas individuales se descartan directamente como $\mathrm{SIN\_ECO}$, con valores medios de $\max(r_0, r_1)$ entre $0.345$ y $0.497$ (inferiores a $U_{\mathrm{eco}} = 0.70$). En los cuatro géneros, el filtro de actividad global y la verificación de redundancia cíclica (CRC) de la trama producen exactamente cero bits emitidos y cero metadatos falsos.
 
 \begin{table}[!t]
-\caption{Desempeño del decodificador ante archivos de audio sin codificar.}
+\caption{Desempeño del decodificador ante audio sin codificar.}
 \label{tab:sin_codificar}
 \centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
 \begin{tabular}{lcccc}
 \toprule
-Género musical & Ventanas $\mathrm{SIN\_ECO}$ (\si{\percent}) & Media $\max(r_0,r_1)$ & Bits & Falsos \\
+Género & \shortstack{Sin eco\\(\%)} &
+\shortstack{Media\\$\max(r_0,r_1)$} & Bits & Falsos \\
 \midrule
-Clásica (cuerdas) & 82.77 & 0.497 & 0 & 0 \\
-Ragtime (piano)   & 85.58 & 0.430 & 0 & 0 \\
-Jazz              & 92.88 & 0.345 & 0 & 0 \\
-Electrónica       & 94.01 & 0.351 & 0 & 0 \\
+Clásica    & 82.77 & 0.497 & 0 & 0 \\
+Ragtime    & 85.58 & 0.430 & 0 & 0 \\
+Jazz       & 92.88 & 0.345 & 0 & 0 \\
+Electrónica & 94.01 & 0.351 & 0 & 0 \\
 \bottomrule
 \end{tabular}
 \end{table}
