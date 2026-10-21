@@ -11,7 +11,7 @@ las ventanas disponibles o se trunca si no cabe.
 Decodificar: el formato lee los registros; aquí se decide qué se reporta.
 
 Las decisiones de parametros.hpp (SI_NO_CABE, REPETIR_MENSAJE,
-AVISOS_REQUIEREN_VALIDO) entran como argumentos con ese valor por defecto, para
+AVISOS_REQUIEREN_VALIDO, VOTAR_COPIAS) entran como argumentos con ese valor por defecto, para
 poder probar las dos opciones (en Python las pruebas las cambian con mock).
 tests/pruebas_metadatos.cpp compara con los vectores de prototipo/vectores_metadatos.py.
 */
@@ -61,6 +61,11 @@ Codificacion a_bits(const trama::Metadatos& metadatos, std::size_t n_ventanas,
                     parametros::SiNoCabe si_no_cabe = parametros::SI_NO_CABE,
                     bool repetir_mensaje = parametros::REPETIR_MENSAJE);
 
+// Registros de la copia votada (votacion.hpp), cada uno una vez. La copia se lee
+// dos veces seguidas porque es cíclica: un registro puede empezar al final y
+// seguir al principio. Vacío si no se pudo votar.
+std::vector<trama::Lectura> leer_votada(const trama::Bits& bits);
+
 // Metadatos recuperados, sin duplicados, en orden de primera aparición.
 //
 // bits: los de las ventanas clasificadas como 0 o 1. Devuelve:
@@ -70,11 +75,13 @@ Codificacion a_bits(const trama::Metadatos& metadatos, std::size_t n_ventanas,
 //   categoría tiene una copia válida (es una copia dañada de algo ya reportado).
 // Con avisos_requieren_valido, desconocidos y dañados solo se reportan si hubo
 // algún registro válido: un archivo sin codificar no produce avisos.
+// Con votar_copias, los registros de la copia votada se suman como una copia más.
 // Las ventanas sin eco no se pasan: un bit que no es 0 o 1 lanza
 // std::invalid_argument.
 std::vector<trama::Lectura> desde_bits(
     const trama::Bits& bits,
-    bool avisos_requieren_valido = parametros::AVISOS_REQUIEREN_VALIDO);
+    bool avisos_requieren_valido = parametros::AVISOS_REQUIEREN_VALIDO,
+    bool votar_copias = parametros::VOTAR_COPIAS);
 
 }  // namespace metadatos
 

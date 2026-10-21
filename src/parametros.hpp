@@ -95,6 +95,10 @@ constexpr FormatoTrama FORMATO_TRAMA = FormatoTrama::registros;
 // válido (un archivo sin codificar no da avisos); false -> se avisan siempre.
 constexpr bool AVISOS_REQUIEREN_VALIDO = true;
 
+// O2: true -> al decodificar se vota bit a bit entre las copias repetidas del
+// mensaje (votacion.hpp) y la copia votada se lee como una copia más.
+constexpr bool VOTAR_COPIAS = true;
+
 // Atenuación en % (R22-R24) -> amplitud a_b del eco en H_b(z) = 1 + a_b z^(-t_b).
 // El rango (0, 100) es el que acepta el codificador.
 inline double amplitud_desde_porcentaje(double porcentaje) {
