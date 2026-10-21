@@ -1,0 +1,8 @@
+# generado por prototipo/vectores_notificacion.py, semilla 7, tipo=texto
+Título: Canción de prueba
+Artista: Ñandú y los Pingüinos
+Autor: José Pérez
+Álbum: Álbum único
+Año: 2026
+Productor: Estudio Ártico
+Artista invitado: Zoë

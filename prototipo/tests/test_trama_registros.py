@@ -112,6 +112,20 @@ class PruebasLeer(unittest.TestCase):
             (DANADO, AUTOR, b"x"),
         ])
 
+    def test_preambulo_con_un_bit_distinto_en_secuencia(self):
+        copia = f.codificar({TITULO: "a", ARTISTA: "b"})
+        for k in (0, 7):  # un bit del preámbulo del primer registro, luego del segundo
+            for inicio in (0, 48):
+                bits = list(copia)
+                bits[inicio + k] ^= 1
+                self.assertEqual(tipos(f.leer(bits)), [(VALIDO, TITULO), (VALIDO, ARTISTA)])
+
+    def test_preambulo_con_dos_bits_distintos_no_se_acepta(self):
+        bits = f.codificar({TITULO: "a"})
+        bits[0] ^= 1
+        bits[1] ^= 1
+        self.assertEqual(f.leer(bits), [])
+
     def test_crc_incorrecto_fuera_de_secuencia_no_se_anota(self):
         # Tras un registro dañado, el siguiente no empieza "en secuencia".
         bits = registro(TITULO, b"a", crc=0) + registro(ARTISTA, b"b", crc=0)

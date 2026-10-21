@@ -84,7 +84,7 @@ std::vector<double> autocorrelacion_cepstro(const std::vector<double>& ventana) 
 
     std::vector<double> rcc(n_fft);
     for (std::size_t n = 0; n < n_fft; ++n) {
-        rcc[n] = std::abs(espectro[n]);
+        rcc[n] = espectro[n].real();  // (ln|X|)^2 es real y par: R_cc es real
     }
     return rcc;
 }

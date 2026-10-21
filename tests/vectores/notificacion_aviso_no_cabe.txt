@@ -1,0 +1,6 @@
+# generado por prototipo/vectores_notificacion.py, semilla 7, tipo=texto
+************************************************************************
+ADVERTENCIA: los metadatos no caben en el audio.
+Se codificaron 300 de 1000 bits; el resto se perdió.
+Para codificarlos completos faltan unos 33.5 s de audio.
+************************************************************************
