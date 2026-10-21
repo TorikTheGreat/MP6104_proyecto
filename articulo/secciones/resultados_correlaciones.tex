@@ -1,2 +1,22 @@
-% Dueño: A. A21-A23, A30, A31: correlaciones de la recuperación y de la tasa de transferencia con la calidad.
-TODO.
+\subsection{Verificación de los retardos mediante correlación}
+Para comprobar la inserción de los ecos, se restó el audio original del audio codificado y se calculó la correlación cruzada entre ese residuo y la señal original, por ventanas de $2200$ muestras. Se examinaron retardos positivos de $1$ a $150$ muestras.
+
+\begin{table}[htbp]
+\caption{Retardos esperados y detectados}
+\label{tab:retardos}
+\centering
+\begin{tabular}{cccc}
+\hline
+Ventana & Bit & Esperado & Detectado \\
+\hline
+1 & 1 & 88 & 88 \\
+2 & 0 & 44 & 44 \\
+3 & 1 & 88 & 88 \\
+4 & 1 & 88 & 88 \\
+5 & 0 & 44 & 44 \\
+6 & 1 & 88 & 88 \\
+\hline
+\end{tabular}
+\end{table}
+
+Se identificó el retardo esperado en las seis ventanas del mensaje $101101$. Este resultado comprueba la presencia de los ecos en la prueba realizada, pero no equivale a una recuperación independiente del mensaje: el procedimiento utiliza el audio original como referencia. La relación entre tasa de transferencia, calidad y recuperación de bits requiere pruebas adicionales con el decodificador.
