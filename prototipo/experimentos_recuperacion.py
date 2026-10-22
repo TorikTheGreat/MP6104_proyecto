@@ -130,7 +130,7 @@ def generar_figuras(
         ys_p = [float(f["tasa_recuperacion_porcentaje"]) for f in sub_prom]
         ax.plot(xs_p, ys_p, color="black", linestyle="--", linewidth=2.0, marker="*", label="Promedio global")
 
-    ax.axhline(90.0, color="crimson", linestyle=":", linewidth=1.2, label="Meta mínima R46 (90 %)")
+    ax.axhline(90.0, color="crimson", linestyle=":", linewidth=1.2, label="Mínimo exigido (90 %)")
     ax.set_xlabel("Atenuación del eco (%)")
     ax.set_ylabel("Tasa de recuperación (%)")
     ax.set_ylim(50.0, 103.0)
