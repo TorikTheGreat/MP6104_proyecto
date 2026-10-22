@@ -1,11 +1,21 @@
 % Referencias del enunciado del proyecto (autores con las iniciales que da el enunciado;
 % completar con los datos de cada fuente una vez consultada).
 
-@techreport{gruhl_echo_hiding,
-  author      = {Gruhl, D. and Lu, A. and Bender, W.},
-  title       = {Echo Hiding},
-  institution = {Massachusetts Institute of Technology Media Laboratory},
-  url         = {https://pdfs.semanticscholar.org/b964/4dbf393117b4c4bb91122cf7b08f71b71fbd.pdf}
+% Datos de Crossref y doi.org (21 oct 2026), verificados contra el PDF (fuentes/
+% gruhl1996.pdf, pp. 295-315). La URL que da el enunciado devuelve un archivo vacío.
+% Lo que se cita: cepstro con logaritmo complejo (apéndice A), autocorrelación del
+% cepstro (sec. 6), retardo de 1 ms no se resuelve como eco y menos de 0.5 ms no se
+% decodifica bien (sec. 7), saltar los silencios (sec. 7).
+@inproceedings{gruhl_echo_hiding,
+  author    = {Gruhl, D. and Lu, A. and Bender, W.},
+  title     = {Echo Hiding},
+  booktitle = {Information Hiding},
+  series    = {Lecture Notes in Computer Science},
+  publisher = {Springer},
+  pages     = {295--315},
+  year      = {1996},
+  doi       = {10.1007/3-540-61996-8_48},
+  url       = {https://doi.org/10.1007/3-540-61996-8_48}
 }
 
 @article{dutta2009,
@@ -38,7 +48,7 @@
 }
 
 @misc{itu_p862,
-  author       = {{ITU Radiocommunication Assembly}},
+  author       = {{ITU-T}},
   title        = {P.862: Perceptual Evaluation of Speech Quality ({PESQ}): An Objective Method for End-to-End Speech Quality Assessment of Narrow-Band Telephone Networks and Speech Codecs},
   howpublished = {\url{https://www.itu.int/rec/T-REC-P.862/en}},
   year         = {2018}
@@ -49,4 +59,38 @@
   title        = {Article Templates and Instructions},
   howpublished = {\url{https://www.ieee.org/publications_standards/publications/authors/author_templates.html}},
   year         = {2017}
+}
+
+% Referencias agregadas por C (consultadas el 21 de octubre de 2026; se pudo abrir cada una).
+
+@misc{rfc3629,
+  author       = {Yergeau, F.},
+  title        = {{UTF-8}, a Transformation Format of {ISO} 10646},
+  howpublished = {RFC 3629, \url{https://www.rfc-editor.org/rfc/rfc3629}},
+  month        = nov,
+  year         = {2003}
+}
+
+@misc{reveng_crc,
+  author       = {Cook, G.},
+  title        = {Catalogue of Parametrised {CRC} Algorithms with 16 Bits},
+  howpublished = {\url{https://reveng.sourceforge.io/crc-catalogue/16.htm}},
+  note         = {Entrada CRC-16/IBM-3740. Consultado el 21 de octubre de 2026}
+}
+
+% Retirada por la ITU el 5 de enero de 2024 (como P.862); el PDF sigue disponible.
+@misc{itu_p8622,
+  author       = {{ITU-T}},
+  title        = {P.862.2: Wideband Extension to Recommendation {P.862} for the Assessment of Wideband Telephone Networks and Speech Codecs},
+  howpublished = {\url{https://www.itu.int/rec/T-REC-P.862.2-200711-W/en}},
+  month        = nov,
+  year         = {2007}
+}
+
+@misc{itu_bs1387,
+  author       = {{ITU-R}},
+  title        = {{BS}.1387-2: Method for Objective Measurements of Perceived Audio Quality},
+  howpublished = {\url{https://www.itu.int/rec/R-REC-BS.1387/en}},
+  month        = may,
+  year         = {2023}
 }

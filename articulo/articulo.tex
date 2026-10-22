@@ -26,6 +26,8 @@
 \usepackage{graphicx}
 \usepackage{booktabs} % tablas sin divisiones verticales (A10, A11)
 \usepackage{siunitx}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,calc}
 \usepackage[hidelinks]{hyperref}
 \usepackage{cleveref}
 
@@ -37,11 +39,17 @@
 
 \title{Esteganografía de metadatos en audio mediante enmascaramiento con eco}
 
+% Formato de IEEE Transactions (bare_jrnl_new_sample4.tex): nombres separados por
+% ~, afiliación y correo de cada autor en \thanks. Nombres, afiliación y correos
+% tomados de un artículo anterior del mismo equipo (captura del 21 oct).
 \author{%
-  Marco Zolla Salazar,
-  Marcelo Mata Solano
-  y~Diego~Martínez%
-  \thanks{Maestría en Electrónica, Instituto Tecnológico de Costa Rica.}}
+  Marco~Zolla~Salazar,
+  Marcelo~Mata~Solano
+  y~Luis~Diego~Martinez~Jimenez%
+  \thanks{M. Zolla Salazar, M. Mata Solano y L. D. Martinez Jimenez están con la
+  Maestría en Ingeniería Electrónica, Instituto Tecnológico de Costa Rica, Costa Rica
+  (correo: mzolla@estudiantec.cr; m.mata.3@estudiantec.cr;
+  diego\_mj22@estudiantec.cr).}}
 
 % Encabezados de página: revista (aquí, el curso) y autores: título.
 \markboth{MP6104 Procesamiento Digital de Señales, Proyecto 1, octubre~2026}%
@@ -49,44 +57,77 @@
 
 \maketitle
 
-% Dueño: C. A14: el resumen va en inglés. A15: debe permitir decidir si el artículo es útil.
 \begin{otherlanguage}{english}
 \begin{abstract}
-This paper presents an audio steganography system designed to embed and recover metadata using echo hiding. Binary information is encoded by introducing low-amplitude echoes with two different delays into an audio signal. The encoder was implemented in Python and C++17 using convolution and overlap-add, while the decoder identifies the embedded delays through cepstral autocorrelation analysis. Experimental evaluation considered audio quality, bit recovery, and rejection of unencoded signals across four musical genres. The results show that bit recovery depends on echo attenuation, window length, and the spectral characteristics of the audio. Under the evaluated conditions, electronic music achieved complete bit recovery, whereas classical music presented greater decoding difficulties. Although the system successfully demonstrates metadata embedding and extraction under favorable conditions, additional improvements are required to increase robustness across different audio contents.
+This paper presents a system that hides song metadata in WAV files by echo
+hiding. Each field becomes a record protected by a cyclic redundancy check; the
+message is repeated over the file, and each window carries one bit as an echo
+applied by convolution with overlap-add. The decoder classifies windows with the
+autocorrelation of the cepstrum and corrects bit errors by a majority vote across
+the repeated copies. Python and C++ implementations give the same output. The
+defaults (\SI{750}{\micro\second} and \SI{1500}{\micro\second} delays,
+\SI{30}{\percent} attenuation, \SI{26.73}{bit\per\second}) were chosen on audio
+separate from the test excerpts; with them, the program recovers
+\SIrange{95.7}{98.3}{\percent} of the bits in \SI{20}{\second} excerpts of three
+recordings, with wideband
+perceptual evaluation of speech quality (PESQ) scores of 3.80 to 4.15. Quality falls with echo amplitude and trades off
+against recovery. Voting raises the fields recovered at a \SI{5}{\percent} bit
+error rate from 0.15 to 5.15 of seven on average and recovers all three encoded
+fields in \SI{60}{\second} of real music, but needs at least three copies and does not
+correct dropped or inserted bits. Unencoded files produced no false metadata.
+% Texto anterior (Marcelo): (lo cambié para incluir lo nuevo)
+% This paper presents an audio steganography system designed to embed and recover metadata using echo hiding. Binary information is encoded by introducing low-amplitude echoes with two different delays into an audio signal. The encoder was implemented in Python and C++17 using convolution and overlap-add, while the decoder identifies the embedded delays through cepstral autocorrelation analysis. Experimental evaluation considered audio quality, bit recovery, and rejection of unencoded signals across four musical genres. The results show that bit recovery depends on echo attenuation, window length, and the spectral characteristics of the audio. Under the evaluated conditions, electronic music achieved complete bit recovery, whereas classical music presented greater decoding difficulties. Although the system successfully demonstrates metadata embedding and extraction under favorable conditions, additional improvements are required to increase robustness across different audio contents.
 \end{abstract}
 \end{otherlanguage}
 
 % Dueño: C. A13: en orden alfabético. A16: representativas del contenido.
 \begin{IEEEkeywords}
-Audio steganography, cepstral analysis, echo hiding, metadata embedding, signal processing.
+% Marcelo, habías puesto algunas pero no todas aparecían en la taxonomía de la IEEE
+Acoustic signal processing, audio coding, cepstral analysis, error correction codes, steganography.
 \end{IEEEkeywords}
 
 % Cada archivo de secciones/ tiene un solo dueño (anotado en su primera línea);
 % C, como editor, revisa el estilo y la forma (A4-A14).
+% Las líneas en blanco entre los \input separan los párrafos de archivos distintos.
 \section{Introducción}
 \input{secciones/introduccion}
 
 \section{Marco teórico}
 \input{secciones/marco_eco}
+
 \input{secciones/marco_cepstro}
 
 \section{Solución propuesta}
+\input{secciones/solucion_sistema}
+
 \input{secciones/solucion_codificador}
+
 \input{secciones/solucion_decodificador}
+
 \input{secciones/solucion_metadatos}
 
 \section{Resultados}
 \input{secciones/resultados_calidad}
+
 \input{secciones/resultados_recuperacion}
+
 \input{secciones/resultados_correlaciones}
+
+\input{secciones/resultados_metadatos}
 
 \section{Conclusiones}
 \input{secciones/conclusiones_calidad}
+
 \input{secciones/conclusiones_recuperacion}
+
 \input{secciones/conclusiones_correlaciones}
+
+\input{secciones/conclusiones_metadatos}
+
 \input{secciones/recomendaciones}
 
-\bibliographystyle{IEEEtran}
+% IEEEtran-es.bst: IEEEtran.bst con las cadenas fijas en español (A4).
+\bibliographystyle{IEEEtran-es}
 \bibliography{referencias}
 
 \end{document}

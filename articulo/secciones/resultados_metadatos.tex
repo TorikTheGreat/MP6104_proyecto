@@ -1,0 +1,26 @@
+\subsection{Recuperación de metadatos con votación}
+Para medir la votación se pasó la trama por un canal simulado que invierte, borra o inserta bits al azar, cada bit de forma independiente. El mensaje tiene los siete metadatos con textos de prueba (1000 bits) y se repitió hasta llenar 4810 bits, lo que cabe en tres minutos de audio: 4.81 copias. Un metadato cuenta como recuperado si se lee con su texto original. Como se observa en la Tabla~\ref{tab:votacion}, con \SI{5}{\percent} de bits invertidos la lectura directa recupera 0.15 de siete en promedio y la votación, 5.15, cerca de los 5.1 que predice la teoría si la copia votada tiene \SI{0.23}{\percent} de bits errados. Con \SI{15}{\percent} ya casi nunca se puede estimar el período, porque las copias dejan de coincidir en el \SI{75}{\percent} de sus bits, y la votación casi no recupera nada. Con bits borrados o insertados la votación no ayuda, porque las copias se alinean enteras.
+
+\begin{table}[!t]
+\caption{Metadatos recuperados, de siete, con y sin votación en el canal simulado (promedio de 20 semillas).}
+\label{tab:votacion}
+\centering
+\begin{tabular}{lcc}
+\toprule
+Canal & Sin votación & Con votación \\
+\midrule
+Sin errores & 7.00 & 7.00 \\
+\SI{1}{\percent} de bits invertidos & 5.00 & 7.00 \\
+\SI{5}{\percent} de bits invertidos & 0.15 & 5.15 \\
+\SI{10}{\percent} de bits invertidos & 0.00 & 1.75 \\
+\SI{15}{\percent} de bits invertidos & 0.00 & 0.15 \\
+\SI{0.5}{\percent} de bits borrados & 6.70 & 6.70 \\
+\SI{0.5}{\percent} de bits insertados & 6.60 & 6.60 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Para probarlo con audio real, se codificaron tres metadatos en los tres fragmentos de prueba seguidos (\SI{60}{\second}, 4.77 copias del mensaje). En los seis órdenes posibles de los fragmentos, la votación recuperó los tres metadatos y la lectura directa, uno o dos. Un fragmento de \SI{20}{\second} solo tiene 1.6 copias, menos de las tres que necesita la votación, y en las grabaciones reales recuperó como mucho uno de tres metadatos.
+
+\label{sec:seleccion}
+Los valores por defecto (\SI{750}{\micro\second}, \SI{1500}{\micro\second}, \SI{30}{\percent} y $K = 25$) se obtuvieron a partir de un barrido de 45 combinaciones de retardos y atenuación, evaluando cada una contra 25 tramos de \SI{20}{\second} tomados de cinco grabaciones, distintos de los fragmentos de prueba. De las combinaciones que recuperan al menos el \SI{90}{\percent} de los bits en cada pieza, se eligió la que recupera más metadatos en las grabaciones completas; en caso de empate, se tomó la de mejor calidad. Lo mismo se hizo con el tamaño de la ventana: con $K$ menor a 25, la recuperación baja del \SI{90}{\percent} o la calidad empeora. Con estos valores, el programa recupera entre el \SI{95.7}{\percent} y el \SI{98.3}{\percent} de los bits en los fragmentos de prueba. El detalle de este proceso se encuentra en el repositorio.

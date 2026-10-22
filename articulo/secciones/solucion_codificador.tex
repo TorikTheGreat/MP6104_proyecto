@@ -1,42 +1,36 @@
 \subsection{Codificador de eco}
+\label{sec:codificador}
 
-El codificador inserta informacion binaria en una senal de audio mediante
+El codificador inserta información binaria en una señal de audio mediante
 la suma de ecos de baja amplitud. Se asigna un retardo diferente a cada
-simbolo: $D_0$ para el bit cero y $D_1$ para el bit uno. Para una ventana
+símbolo: $d_0$ para el bit cero y $d_1$ para el bit uno. Para una ventana
 que contiene el bit $b$, el eco agregado corresponde a una copia
 atenuada y desplazada de sus muestras:
 \begin{equation}
  e_b[n]=\begin{cases}
- \alpha_b x[n-D_b], & n-D_b\text{ pertenece a la ventana},\\
+ a_b x[n-d_b], & n-d_b\text{ pertenece a la ventana},\\
  0, & \text{en otro caso}.
  \end{cases}
 \end{equation}
-La senal resultante se obtiene sumando el audio original y las
-contribuciones de todas las ventanas: $y[n]=x[n]+\sum_b e_b[n]$,
-donde la suma se entiende sobre las ventanas que contienen los bits.
+La señal resultante se obtiene sumando el audio original y las
+contribuciones de todas las ventanas: $y[n]=x[n]+\sum_k e_{b_k}[n]$,
+donde $b_k$ es el bit de la ventana $k$.
 
-Se desarrollo un prototipo en Python y una implementacion en C++17.
-El programa lee audio WAV estereo PCM16, permite elegir el canal de
-insercion, configurar los retardos y las atenuaciones, e introducir
-un mensaje binario. Cada ventana se procesa mediante convolucion explicita con la
-respuesta al impulso correspondiente al bit. Las contribuciones
-desplazadas se acumulan mediante Overlap-Add y el canal no seleccionado conserva sus muestras originales.
-Al escribir el WAV se aplica saturacion al intervalo PCM16 y
-truncamiento hacia cero.
+Se desarrolló un prototipo en Python y una implementación en C++17.
+El programa lee archivos de audio en formato WAV (\textit{waveform audio file format}) estéreo, con modulación por impulsos codificados (PCM) de 16 bits, permite elegir el canal de
+inserción y configurar los retardos y las atenuaciones. Los retardos, en
+microsegundos, se redondean a muestras enteras a \SI{44.1}{\kilo\hertz}, y la
+longitud de ventana es $L=K\max(d_0,d_1)$ con $K=25$: con los valores por
+defecto, $d_0=33$ y $d_1=66$ muestras y $L=1650$ muestras
+(\SI{37.4}{\milli\second}). Cada ventana se procesa mediante convolución
+explícita con la respuesta al impulso correspondiente al bit, y las
+contribuciones desplazadas se acumulan mediante solapamiento y suma en un búfer
+que empieza en ceros; el canal no seleccionado conserva sus muestras originales.
+Al escribir el WAV, con la misma cabecera que el original, se aplica saturación
+al intervalo de 16 bits y truncamiento hacia cero.
 
-En las pruebas se utilizo una frecuencia de muestreo de $44.1$ kHz,
-retardos de $1$ y $2$ ms (respectivamente $44$ y $88$ muestras), y
-una longitud de ventana $N=K\max(D_0,D_1)$ con $K=25$; por tanto,
-$N=2200$ muestras ($49.89$ ms). Para el mensaje
-$101101$ y una atenuacion del 20\,\char37{} en ambos retardos, las
-implementaciones Python y C++ produjeron archivos con cero
-diferencias entre las muestras PCM16 del canal codificado.
-
-
-Para la prueba de integracion con el decodificador se utilizo una
-configuracion diferente: retardos de $44$ y $66$ muestras,
-atenuacion del $30\,\char37{}$ y ventanas de $1650$ muestras.
-En esta configuracion se codifico una trama de metadatos
-repetida hasta ocupar las ventanas disponibles.
-Los resultados de calidad y correlacion presentados corresponden
-a los experimentos iniciales y no a esta configuracion de integracion.
+Para verificar la implementación se utilizaron retardos de $1$ y $2$ ms
+(respectivamente $44$ y $88$ muestras) y, por tanto, $L=2200$ muestras
+($49.89$ ms). Para el mensaje $101101$ y una atenuación del \SI{20}{\percent}
+en ambos retardos, las implementaciones Python y C++ produjeron archivos con cero
+diferencias entre las muestras del canal codificado.

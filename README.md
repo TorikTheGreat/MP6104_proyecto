@@ -190,6 +190,22 @@ que cumplió el 90 % (unos 5 minutos, `resultados/ajuste_canciones.csv`).
 de la ventana, y mide lo mismo con los retardos y la atenuación por defecto (unos 15
 minutos, necesita `g++`; `resultados/ajuste_ventana.csv`).
 
+### Figuras complementarias
+
+Figuras que no caben en las 4 páginas del artículo; los números están en
+`resultados/calidad_correlaciones.csv` y `resultados/calidad_retardos.csv`.
+
+PESQ frente a la recuperación de bits, con atenuaciones de 10 a 50 % (correlación
+de -0.76):
+
+![PESQ frente a la recuperación](figuras/calidad_vs_recuperacion.png)
+
+PESQ frente a la tasa de transferencia, con 30 % de atenuación y cinco pares de
+retardos; los dos puntos en 26.73 bit/s son 750 y 1000 us para el bit 0, con
+1500 us para el bit 1:
+
+![PESQ frente a la tasa](figuras/calidad_vs_tasa.png)
+
 ## Limpieza
 
 ```bash

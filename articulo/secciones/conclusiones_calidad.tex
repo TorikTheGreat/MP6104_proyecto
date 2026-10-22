@@ -1,1 +1,14 @@
-En el fragmento evaluado, el aumento de la atenuación del eco produjo una disminución del SNR, de $42.581$ dB con un $5\,\char37{}$ de atenuación a $28.605$ dB con un $25\,\char37{}$. Por tanto, existe un compromiso entre la intensidad del eco insertado y la alteración de la señal. La selección de una atenuación adecuada requiere comprobar también la recuperación de los bits. Los resultados actuales corresponden a un único fragmento musical y a un mensaje de seis bits; no permiten generalizar el comportamiento a otros géneros ni a una ocupación completa de las ventanas.
+La calidad perceptual baja de forma sostenida con la amplitud del eco, y el
+\textit{jazz} es el género más sensible; con los valores por defecto la nota PESQ
+es de 3.80 a 4.15. Como PESQ está pensada para voz y no se hicieron pruebas de
+escucha, estas notas solo aproximan la indistinguibilidad perceptual que pide el
+enunciado. La SNR
+queda fijada por la atenuación, $-20\log_{10} a$, y no sirve para comparar
+géneros.
+
+La calidad y la recuperación se oponen (correlación de $-0.76$): cada punto de
+recuperación por encima de cerca del \SI{97}{\percent} cuesta cada vez más
+calidad. La relación entre la tasa de transferencia y la calidad depende del
+género: en el \textit{jazz} la calidad baja al subir la tasa, y en la clásica y
+el \textit{ragtime} no hay una tendencia clara; como la tasa cambia con los
+retardos, el efecto no se puede atribuir solo al tamaño de la ventana.

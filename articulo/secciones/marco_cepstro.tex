@@ -10,7 +10,8 @@ Para $a_b < 1$, la expansión en serie de Taylor $\ln(1 + a_b e^{-j\omega d_b}) 
 
 Con el propósito de reforzar dicho impulso frente a las variaciones propias de la señal musical, Gruhl \textit{et al.}~\cite{gruhl_echo_hiding} proponen evaluar la convolución del cepstro consigo mismo. Aplicando el teorema de convolución, la autocorrelación del cepstro $R_{cc}(n)$ se calcula directamente en el dominio espectral según la Ecuación~\eqref{eq:rcc_espectral}:
 \begin{equation}
-R_{cc}(n) = c(n) * c(n) = \mathcal{F}^{-1}\left\{\left(\ln\left|\mathcal{F}\{\hat{v}_k(n)\}\right|\right)^2\right\}.
+R_{cc}(n) = c_r(n) * c_r(n) = \mathcal{F}^{-1}\left\{\left(\ln\left|\mathcal{F}\{\hat{v}_k(n)\}\right|\right)^2\right\}.
 \label{eq:rcc_espectral}
 \end{equation}
+Aquí $c_r(n) = \mathcal{F}^{-1}\{\ln|\mathcal{F}\{\hat{v}_k(n)\}|\}$ es el cepstro real, la parte par de $c(n)$, que conserva los picos en los múltiplos de $d_b$; por ser par, su convolución consigo mismo es también su autocorrelación, y $\hat{v}_k(n)$ es la ventana normalizada que se define en la Sección~\ref{sec:decodificador}.
 El uso del logaritmo de la magnitud espectral $|\mathcal{F}\{\hat{v}_k(n)\}|$ en la Ecuación~\eqref{eq:rcc_espectral} evita la discontinuidad de salto de $\pm\pi$ propia del valor principal de la fase compleja, la cual introduciría ruido de banda ancha al elevar el espectro logarítmico al cuadrado. Asimismo, dado que escalar la señal por un factor $G$ suma una constante $\ln G$ al componente de quefrencia cero $c(0)$ y modifica el término cruzado $2c(0)c(d_b)$ de $R_{cc}(d_b)$, es indispensable normalizar previamente cada ventana $\hat{v}_k(n)$ a una raíz cuadrática media (RMS) de referencia constante $\mathrm{RMS}_{\mathrm{ref}}$, garantizando así que el clasificador sea invariante ante pasajes musicales fuertes o débiles.

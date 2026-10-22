@@ -1,0 +1,52 @@
+La Figura~\ref{fig:sistema} ilustra el sistema completo: el codificador toma los metadatos y los convierte en una secuencia de bits, que repite hasta tener un bit por ventana. Cada una de estas se convoluciona con una de dos posibles respuestas al impulso, dependiendo del valor del bit en la ventana. El decodificador luego clasifica cada ventana con la autocorrelación del cepstro y lee los metadatos de la secuencia de bits, junto con los de una copia obtenida por votación entre las repeticiones.
+
+\begin{figure}[!t]
+\centering
+\begin{tikzpicture}[
+  font=\scriptsize, node distance=2.2mm and 2.6mm,
+  bloque/.style={draw, rounded corners=1pt, align=center, inner sep=2pt,
+                 minimum height=6.5mm},
+  dato/.style={align=center, inner sep=1pt},
+  flecha/.style={-{Stealth[length=1.6mm]}, semithick}]
+  % Codificador
+  \node[dato] (wav1) {WAV};
+  \node[bloque, right=of wav1] (vent1) {Enventanado\\$L = K\max(d_0, d_1)$};
+  \node[bloque, right=of vent1] (conv) {Convolución\\con $h_{b_k}$};
+  \node[bloque, right=of conv] (ola) {Solapamiento\\y suma};
+  \node[dato, right=of ola] (wav2) {WAV};
+  \node[dato, below=6mm of wav1] (meta) {Metadatos};
+  \node[bloque, right=of meta] (trama) {Registros\\con CRC};
+  \node[bloque, right=of trama] (rep) {Repetición\\del mensaje};
+  \draw[flecha] (wav1) -- (vent1);
+  \draw[flecha] (vent1) -- (conv);
+  \draw[flecha] (conv) -- (ola);
+  \draw[flecha] (ola) -- (wav2);
+  \draw[flecha] (meta) -- (trama);
+  \draw[flecha] (trama) -- (rep);
+  \draw[flecha] (rep) -| node[pos=0.75, right] {$b_k$} (conv);
+  % Decodificador
+  \node[dato, below=7mm of meta] (wav3) {WAV};
+  \node[bloque, right=of wav3] (vent2) {Enventanado};
+  \node[bloque, right=of vent2] (rcc) {$R_{cc}(n)$};
+  \node[bloque, right=of rcc] (clas) {Clasificador\\$R_{cc}(d_0)$, $R_{cc}(d_1)$};
+  \node[bloque, below=6mm of clas] (voto) {Votación\\entre copias};
+  \node[bloque, left=6mm of voto] (dir) {Lectura de\\registros};
+  \node[bloque, left=of dir] (noti) {Notificación};
+  \node[dato, below=3mm of noti, xshift=-7mm] (out) {Salida\\estándar};
+  \node[dato, below=3mm of noti, xshift=7mm] (err) {Salida\\de error};
+  \draw[flecha] (wav3) -- (vent2);
+  \draw[flecha] (vent2) -- (rcc);
+  \draw[flecha] (rcc) -- (clas);
+  \coordinate (bif) at ($(clas.south)!0.5!(voto.north)$);
+  \draw[semithick] (clas.south) -- node[right] {bits} (bif);
+  \draw[flecha] (bif) -- (voto);
+  \draw[flecha] (bif) -| (dir.north);
+  \draw[flecha] (voto) -- (dir);
+  \draw[flecha] (dir) -- (noti);
+  \draw[flecha] (noti) -- (out);
+  \draw[flecha] (noti) -- (err);
+  \draw[dashed] ([yshift=-2mm]meta.south -| wav1.west) -- ([yshift=-2mm]meta.south -| wav2.east);
+\end{tikzpicture}
+\caption{Diagrama del sistema: codificador (arriba) y decodificador (abajo).}
+\label{fig:sistema}
+\end{figure}

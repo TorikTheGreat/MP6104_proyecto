@@ -1,5 +1,5 @@
 \subsection{Verificación de los retardos mediante correlación}
-Para comprobar la inserción de los ecos, se restó el audio original del audio codificado y se calculó la correlación cruzada entre ese residuo y la señal original, por ventanas de $2200$ muestras. Se examinaron retardos positivos de $1$ a $150$ muestras.
+Para comprobar la inserción de los ecos, se restó el audio original del audio codificado y se calculó la correlación cruzada entre ese residuo y la señal original, por ventanas de $2200$ muestras. Se examinaron retardos positivos de $1$ a $150$ muestras, con la configuración de la prueba de paridad del codificador (Sección~\ref{sec:codificador}); la Tabla~\ref{tab:retardos} muestra el resultado.
 
 \begin{table}[htbp]
 \caption{Retardos esperados y detectados}
@@ -19,4 +19,4 @@ Ventana & Bit & Esperado & Detectado \\
 \end{tabular}
 \end{table}
 
-Se identificó el retardo esperado en las seis ventanas del mensaje $101101$. Este resultado comprueba la presencia de los ecos en la prueba realizada, pero no equivale a una recuperación independiente del mensaje: el procedimiento utiliza el audio original como referencia. La relación entre tasa de transferencia, calidad y recuperación de bits requiere pruebas adicionales con el decodificador.
+Se identificó el retardo esperado en las seis ventanas del mensaje $101101$. Este resultado comprueba la presencia de los ecos en la prueba realizada, pero no equivale a una recuperación independiente del mensaje: el procedimiento utiliza el audio original como referencia; la recuperación con el decodificador se analiza en la Sección~\ref{sec:recuperacion}.
