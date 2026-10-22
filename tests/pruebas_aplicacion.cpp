@@ -271,7 +271,8 @@ PRUEBA(aplicacion_igual_que_python) {
     const std::string original = temporal("paridad_original.wav");
     const std::string codificado = temporal("paridad_codificado.wav");
     reales.escribir(original, a, std::vector<double>(a.izquierdo.begin(), a.izquierdo.end()), true);
-    const std::vector<std::string> eco = {"--retardo0", "100", "--retardo1", "150"};
+    const std::vector<std::string> eco = {"--retardo0", "100", "--retardo1", "150",
+                                          "--atenuacion0", "30", "--atenuacion1", "30"};
 
     std::vector<std::string> args = {original, codificado, "--titulo", "Hola"};
     args.insert(args.end(), eco.begin(), eco.end());

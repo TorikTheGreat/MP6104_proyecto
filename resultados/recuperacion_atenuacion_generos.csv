@@ -1,26 +1,31 @@
 archivo,genero,retardo0_us,retardo1_us,k_ventana,atenuacion_porcentaje,aciertos,ventanas,tasa_recuperacion_porcentaje
-clasica_vivaldi.wav,Clásica (cuerdas),1000,1500,25,10.0,411,534,76.97
-ragtime_joplin.wav,Ragtime (piano),1000,1500,25,10.0,428,534,80.15
-jazz_park.wav,Jazz,1000,1500,25,10.0,423,534,79.21
-electronica_sintetica.wav,Electrónica,1000,1500,25,10.0,521,534,97.57
-PROMEDIO,Promedio global,1000,1500,25,10.0,1783,2136,83.47
-clasica_vivaldi.wav,Clásica (cuerdas),1000,1500,25,20.0,483,534,90.45
-ragtime_joplin.wav,Ragtime (piano),1000,1500,25,20.0,475,534,88.95
-jazz_park.wav,Jazz,1000,1500,25,20.0,491,534,91.95
-electronica_sintetica.wav,Electrónica,1000,1500,25,20.0,534,534,100.0
-PROMEDIO,Promedio global,1000,1500,25,20.0,1983,2136,92.84
-clasica_vivaldi.wav,Clásica (cuerdas),1000,1500,25,30.0,511,534,95.69
-ragtime_joplin.wav,Ragtime (piano),1000,1500,25,30.0,510,534,95.51
-jazz_park.wav,Jazz,1000,1500,25,30.0,515,534,96.44
-electronica_sintetica.wav,Electrónica,1000,1500,25,30.0,534,534,100.0
-PROMEDIO,Promedio global,1000,1500,25,30.0,2070,2136,96.91
-clasica_vivaldi.wav,Clásica (cuerdas),1000,1500,25,40.0,523,534,97.94
-ragtime_joplin.wav,Ragtime (piano),1000,1500,25,40.0,526,534,98.5
-jazz_park.wav,Jazz,1000,1500,25,40.0,525,534,98.31
-electronica_sintetica.wav,Electrónica,1000,1500,25,40.0,534,534,100.0
-PROMEDIO,Promedio global,1000,1500,25,40.0,2108,2136,98.69
-clasica_vivaldi.wav,Clásica (cuerdas),1000,1500,25,50.0,528,534,98.88
-ragtime_joplin.wav,Ragtime (piano),1000,1500,25,50.0,525,534,98.31
-jazz_park.wav,Jazz,1000,1500,25,50.0,528,534,98.88
-electronica_sintetica.wav,Electrónica,1000,1500,25,50.0,534,534,100.0
-PROMEDIO,Promedio global,1000,1500,25,50.0,2115,2136,99.02
+clasica_vivaldi.wav,Clásica (cuerdas),750,1500,25,10.0,421,534,78.84
+ragtime_joplin.wav,Ragtime (piano),750,1500,25,10.0,423,534,79.21
+jazz_park.wav,Jazz,750,1500,25,10.0,428,534,80.15
+electronica_sintetica.wav,Electrónica,750,1500,25,10.0,530,534,99.25
+PROMEDIO,Promedio global,750,1500,25,10.0,1802,2136,84.36
+clasica_vivaldi.wav,Clásica (cuerdas),750,1500,25,20.0,487,534,91.2
+ragtime_joplin.wav,Ragtime (piano),750,1500,25,20.0,491,534,91.95
+jazz_park.wav,Jazz,750,1500,25,20.0,499,534,93.45
+electronica_sintetica.wav,Electrónica,750,1500,25,20.0,534,534,100.0
+PROMEDIO,Promedio global,750,1500,25,20.0,2011,2136,94.15
+clasica_vivaldi.wav,Clásica (cuerdas),750,1500,25,25.0,509,534,95.32
+ragtime_joplin.wav,Ragtime (piano),750,1500,25,25.0,507,534,94.94
+jazz_park.wav,Jazz,750,1500,25,25.0,516,534,96.63
+electronica_sintetica.wav,Electrónica,750,1500,25,25.0,534,534,100.0
+PROMEDIO,Promedio global,750,1500,25,25.0,2066,2136,96.72
+clasica_vivaldi.wav,Clásica (cuerdas),750,1500,25,30.0,521,534,97.57
+ragtime_joplin.wav,Ragtime (piano),750,1500,25,30.0,521,534,97.57
+jazz_park.wav,Jazz,750,1500,25,30.0,524,534,98.13
+electronica_sintetica.wav,Electrónica,750,1500,25,30.0,534,534,100.0
+PROMEDIO,Promedio global,750,1500,25,30.0,2100,2136,98.31
+clasica_vivaldi.wav,Clásica (cuerdas),750,1500,25,40.0,529,534,99.06
+ragtime_joplin.wav,Ragtime (piano),750,1500,25,40.0,526,534,98.5
+jazz_park.wav,Jazz,750,1500,25,40.0,532,534,99.63
+electronica_sintetica.wav,Electrónica,750,1500,25,40.0,534,534,100.0
+PROMEDIO,Promedio global,750,1500,25,40.0,2121,2136,99.3
+clasica_vivaldi.wav,Clásica (cuerdas),750,1500,25,50.0,532,534,99.63
+ragtime_joplin.wav,Ragtime (piano),750,1500,25,50.0,527,534,98.69
+jazz_park.wav,Jazz,750,1500,25,50.0,532,534,99.63
+electronica_sintetica.wav,Electrónica,750,1500,25,50.0,534,534,100.0
+PROMEDIO,Promedio global,750,1500,25,50.0,2125,2136,99.49

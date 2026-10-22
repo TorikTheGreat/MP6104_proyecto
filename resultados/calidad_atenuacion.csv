@@ -1,21 +1,25 @@
 archivo,genero,atenuacion,pesq,snr_db,recuperacion,metadatos
-clasica_vivaldi.wav,Clásica,10,4.55,20.0,75.47,0
-clasica_vivaldi.wav,Clásica,20,4.405,13.98,89.33,0
-clasica_vivaldi.wav,Clásica,30,4.243,10.46,93.82,1
-clasica_vivaldi.wav,Clásica,40,4.028,7.96,96.63,1
-clasica_vivaldi.wav,Clásica,50,3.759,6.02,97.38,1
-ragtime_joplin.wav,Ragtime,10,4.553,20.01,77.9,0
-ragtime_joplin.wav,Ragtime,20,4.387,13.98,89.7,0
-ragtime_joplin.wav,Ragtime,30,4.161,10.46,95.69,0
-ragtime_joplin.wav,Ragtime,40,3.903,7.97,98.69,1
-ragtime_joplin.wav,Ragtime,50,3.625,6.03,98.69,1
-jazz_park.wav,Jazz,10,4.475,20.0,82.77,0
-jazz_park.wav,Jazz,20,4.105,13.98,93.26,0
-jazz_park.wav,Jazz,30,3.729,10.46,96.82,1
-jazz_park.wav,Jazz,40,3.36,7.96,98.5,1
-jazz_park.wav,Jazz,50,3.017,6.02,99.06,2
-electronica_sintetica.wav,Electrónica (sintética),10,nan,20.0,97.75,1
-electronica_sintetica.wav,Electrónica (sintética),20,nan,13.98,100.0,3
+clasica_vivaldi.wav,Clásica,10,4.521,20.02,79.96,0
+clasica_vivaldi.wav,Clásica,20,4.346,14.0,90.64,0
+clasica_vivaldi.wav,Clásica,25,4.257,12.06,94.01,0
+clasica_vivaldi.wav,Clásica,30,4.153,10.48,95.69,1
+clasica_vivaldi.wav,Clásica,40,3.881,7.98,97.94,1
+clasica_vivaldi.wav,Clásica,50,3.604,6.04,98.88,3
+ragtime_joplin.wav,Ragtime,10,4.538,20.01,83.9,0
+ragtime_joplin.wav,Ragtime,20,4.351,13.99,94.19,0
+ragtime_joplin.wav,Ragtime,25,4.227,12.05,96.63,0
+ragtime_joplin.wav,Ragtime,30,4.079,10.47,98.31,0
+ragtime_joplin.wav,Ragtime,40,3.773,7.97,99.44,1
+ragtime_joplin.wav,Ragtime,50,3.473,6.03,99.63,3
+jazz_park.wav,Jazz,10,4.488,20.0,79.03,0
+jazz_park.wav,Jazz,20,4.157,13.98,93.07,0
+jazz_park.wav,Jazz,25,3.988,12.04,95.51,0
+jazz_park.wav,Jazz,30,3.799,10.46,97.57,0
+jazz_park.wav,Jazz,40,3.425,7.96,98.88,1
+jazz_park.wav,Jazz,50,3.099,6.02,99.44,1
+electronica_sintetica.wav,Electrónica (sintética),10,nan,20.01,99.25,1
+electronica_sintetica.wav,Electrónica (sintética),20,nan,13.99,100.0,3
+electronica_sintetica.wav,Electrónica (sintética),25,nan,12.05,100.0,3
 electronica_sintetica.wav,Electrónica (sintética),30,nan,10.46,100.0,3
 electronica_sintetica.wav,Electrónica (sintética),40,nan,7.96,100.0,3
-electronica_sintetica.wav,Electrónica (sintética),50,nan,6.02,100.0,3
+electronica_sintetica.wav,Electrónica (sintética),50,nan,6.03,100.0,3

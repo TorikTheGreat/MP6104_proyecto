@@ -122,8 +122,8 @@ inline std::int16_t a_int16(double y) {
     return static_cast<std::int16_t>(std::clamp(y * 32768.0, -32768.0, 32767.0));
 }
 
-// Valores por defecto (R17, R18), provisionales.
-constexpr std::int64_t RETARDO0_US = 1000;  // 44 muestras
+// Valores por defecto (R17, R18), elegidos con prototipo/ajuste_parametros.py.
+constexpr std::int64_t RETARDO0_US = 750;   // 33 muestras
 constexpr std::int64_t RETARDO1_US = 1500;  // 66 muestras
 constexpr double ATENUACION0 = 30.0;
 constexpr double ATENUACION1 = 30.0;

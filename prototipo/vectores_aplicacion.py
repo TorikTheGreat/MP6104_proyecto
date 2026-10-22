@@ -5,7 +5,8 @@ lo que imprime al decodificarlo.
 
 La entrada no se guarda: es ruido de un generador congruencial que C++ repite con
 la misma fórmula (ruido()). Retardos cortos (100 y 150 us, ventanas de 175
-muestras) para que el vector sea chico.
+muestras) para que el vector sea chico, y atenuación fija de 30 % para que no
+cambie con los valores por defecto.
 """
 
 import os
@@ -18,7 +19,7 @@ from vectores import escribir
 
 SEMILLA = 2026
 VENTANAS = 80
-ENMASCARAMIENTO = ["--retardo0", "100", "--retardo1", "150"]
+ENMASCARAMIENTO = ["--retardo0", "100", "--retardo1", "150", "--atenuacion0", "30", "--atenuacion1", "30"]
 METADATOS = ["--titulo", "Hola"]
 
 

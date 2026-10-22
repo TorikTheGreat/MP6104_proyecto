@@ -124,7 +124,7 @@ y comparan con su propia implementación:
 ./bin/ecoesteg --ayuda
 
 # El ejemplo codificado (R38)
-./bin/ecoesteg resultados/ejemplo_codificado.wav      # Título: Primavera
+./bin/ecoesteg resultados/ejemplo_codificado.wav      # Título: The Entertainer
 ```
 
 El prototipo en Python acepta los mismos argumentos y da el mismo resultado:
@@ -135,7 +135,7 @@ Los archivos deben ser WAV PCM de 16 bits, 44.1 kHz, estéreo.
 | Opción | Valor | Por defecto |
 |---|---|---|
 | `--titulo`, `--artista`, `--autor`, `--album`, `--anio`, `--invitado`, `--productor` | texto UTF-8 de 1 a 255 bytes | |
-| `--retardo0`, `--retardo1` | retardo del eco del bit 0 o 1, en us: entero de 12 a 1 000 000 (al menos una muestra) | 1000, 1500 |
+| `--retardo0`, `--retardo1` | retardo del eco del bit 0 o 1, en us: entero de 12 a 1 000 000 (al menos una muestra) | 750, 1500 |
 | `--atenuacion0`, `--atenuacion1` | amplitud del eco del bit 0 o 1, en %: (0, 100), con hasta 6 decimales | 30, 30 |
 | `--canal` | `izquierdo` o `derecho` | `izquierdo` |
 | `--diagnostico` | ruta de un CSV con el bit de cada ventana: al codificar `ventana,bit` (-1 si va sin eco), al decodificar `ventana,bit,r0,r1,rms` | |

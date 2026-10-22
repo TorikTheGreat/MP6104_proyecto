@@ -33,8 +33,8 @@ ARCHIVOS = [
     ("electronica_sintetica.wav", "Electrónica (sintética)"),
 ]
 METADATOS = ["--titulo", "Canción de prueba", "--artista", "Banda", "--anio", "2026"]
-ATENUACIONES = [10, 20, 30, 40, 50]
-RETARDOS = [(500, 750), (750, 1000), (1000, 1500), (1500, 2000)]
+ATENUACIONES = [10, 20, 25, 30, 40, 50]
+RETARDOS = [(500, 750), (750, 1000), (750, 1500), (1000, 1500), (1500, 2000)]
 # Un color y un marcador por género, en orden fijo.
 ESTILOS = [("#2a78d6", "o"), ("#eb6834", "s"), ("#1baf7a", "^"), ("#eda100", "D")]
 
