@@ -5,7 +5,7 @@ Instituto Tecnológico de Costa Rica, IV Cuatrimestre 2026.
 
 - **Integrantes:**
   - Marco Zolla Salazar
-  - Por completar (rol A) <!-- TODO: cada integrante cambia solo su renglón -->
+  - Marcelo Mata Solano
   - Diego Martínez
 - **Profesor:** M.Sc. Carl Michael Grüner Monzón
 

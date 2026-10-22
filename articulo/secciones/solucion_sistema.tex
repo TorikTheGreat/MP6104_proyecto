@@ -1,6 +1,6 @@
 La Figura~\ref{fig:sistema} ilustra el sistema completo: el codificador toma los metadatos y los convierte en una secuencia de bits, que repite hasta tener un bit por ventana. Cada una de estas se convoluciona con una de dos posibles respuestas al impulso, dependiendo del valor del bit en la ventana. El decodificador luego clasifica cada ventana con la autocorrelación del cepstro y lee los metadatos de la secuencia de bits, junto con los de una copia obtenida por votación entre las repeticiones.
 
-\begin{figure}[!t]
+\begin{figure}[!b]
 \centering
 \begin{tikzpicture}[
   font=\scriptsize, node distance=2.2mm and 2.6mm,
@@ -47,6 +47,6 @@ La Figura~\ref{fig:sistema} ilustra el sistema completo: el codificador toma los
   \draw[flecha] (noti) -- (err);
   \draw[dashed] ([yshift=-2mm]meta.south -| wav1.west) -- ([yshift=-2mm]meta.south -| wav2.east);
 \end{tikzpicture}
-\caption{Diagrama del sistema: codificador (arriba) y decodificador (abajo).}
+\caption{Diagrama del sistema: codificador (arriba) y decodificador (abajo); CRC es la verificación de redundancia cíclica de cada registro y $b_k$, el bit de la ventana $k$.}
 \label{fig:sistema}
 \end{figure}

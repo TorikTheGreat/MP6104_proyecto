@@ -4,7 +4,7 @@
 Los fragmentos de prueba, de \SI{20}{\second}, son la \textit{Primavera} de
 Vivaldi (clásica de cuerdas), \textit{The Entertainer} de Joplin
 (\textit{ragtime} en piano), una grabación de \textit{jazz} para flauta y
-saxofón, todas de dominio público o con licencia libre, y una pieza electrónica
+saxofón y una pieza electrónica
 sintética generada con una semilla fija; las fuentes y los cortes están en el
 repositorio. Para medir la calidad se codificó cada fragmento con el
 programa final, con tres metadatos repetidos en todas las ventanas del canal
@@ -34,11 +34,10 @@ $a^2$ veces la original; por eso no distingue géneros y PESQ sí.
 \label{fig:calidad_vs_atenuacion}
 \end{figure}
 
+
 Al relacionar la calidad con la tasa de recuperación de bits del mismo
 barrido, el coeficiente de correlación de
-Pearson es $-0.76$ en 18 puntos, y la curva se dobla cerca del
-\SI{97}{\percent} de recuperación, donde cada punto adicional cuesta cada vez más
-calidad. Para la tasa de transferencia se variaron los retardos con
+Pearson es $-0.76$ en 18 puntos. Para la tasa de transferencia se variaron los retardos con
 \SI{30}{\percent} de atenuación, de modo que la tasa fue de
 \SIrange{20.05}{53.45}{bit\per\second}. Con
 los tres géneros juntos la correlación es de $-0.07$, pero por género es de
@@ -46,4 +45,4 @@ $-0.97$ en el \textit{jazz}, $0.57$ en la clásica y $0.40$ en el \textit{ragtim
 con solo cinco puntos cada uno: en el \textit{jazz} la calidad baja al subir la
 tasa, y en los otros dos no hay una tendencia clara. Como la tasa cambia porque
 cambian los retardos, el efecto no se puede atribuir solo al tamaño de la
-ventana. Las gráficas de estas dos relaciones están en el repositorio.
+ventana.

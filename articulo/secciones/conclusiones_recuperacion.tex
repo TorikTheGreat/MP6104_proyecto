@@ -1,8 +1,6 @@
 % Dueño: B. A24, A25: una conclusión por cada resultado de recuperación y archivos sin codificar.
-En los ejemplos analizados, la autocorrelación del cepstro muestra un pico en el retardo del bit codificado que supera el umbral de eco, mientras que en la ventana sin codificar ambos retardos quedan por debajo.
-
-La tasa de recuperación crece con la amplitud del eco y, con la atenuación por defecto, supera el \SI{90}{\percent} en los cuatro géneros. El factor de ventana $K$ cambia la tasa de transferencia, pero su efecto sobre la recuperación no es monótono; con $K = 25$, todos los pares de retardos probados superan el \SI{94}{\percent}.
+La tasa de recuperación crece con la amplitud del eco y, con la atenuación por defecto, supera el \SI{90}{\percent} en los cuatro géneros. El factor de ventana $K$ cambia la tasa de transferencia, pero su efecto sobre la recuperación no es monótono.
 
 Con atenuaciones bajas, las grabaciones reales de los tres géneros recuperan menos que la electrónica sintética: con \SI{10}{\percent}, cerca del \SI{80}{\percent} frente a más del \SI{99}{\percent}.
 
-El criterio de umbral sobre $\max(R_{cc}(d_0), R_{cc}(d_1))$ combinado con la validación de actividad mínima por señal identificó entre el \SI{85.58}{\percent} y el \SI{97.75}{\percent} de las ventanas individuales sin eco, y en los cuatro archivos sin codificar probados el filtro de actividad no dejó pasar ningún bit, así que no se reportó ningún metadato falso.
+En los cuatro archivos sin codificar probados, el filtro de actividad no dejó pasar ningún bit, así que no se reportó ningún metadato falso.

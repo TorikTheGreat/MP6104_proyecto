@@ -1,17 +1,16 @@
 % Dueño: B. A19: cepstro y su autocorrelación.
 \subsection{Cepstro y autocorrelación espectral}
 
-Cuando una ventana de audio $v_k(n)$ atraviesa el filtro de eco $h_b(n) = \delta(n) + a_b \delta(n - d_b)$ asociado al bit $b \in \{0, 1\}$, su transformada de Fourier de tiempo discreto satisface $Y_k(\omega) = V_k(\omega)\left(1 + a_b e^{-j\omega d_b}\right)$. Para separar multiplicativamente la respuesta del eco respecto a la señal portadora, se emplea el cepstro $c(n)$, definido en la Ecuación~\eqref{eq:cepstro} a partir de la transformada de Fourier $\mathcal{F}$ y su inversa $\mathcal{F}^{-1}$~\cite{gruhl_echo_hiding}:
+Cuando una ventana de audio $x_k(n)$ atraviesa el filtro de eco $h_b$ asociado al bit $b$, su salida $y_k(n)$ tiene transformada de Fourier de tiempo discreto $Y_k(\omega) = X_k(\omega)\left(1 + a_b e^{-j\omega d_b}\right)$. Para separar multiplicativamente la respuesta del eco respecto a la señal portadora, se emplea el cepstro $c(n)$, definido en la Ecuación~\eqref{eq:cepstro} a partir de la transformada de Fourier $\mathcal{F}$ y su inversa $\mathcal{F}^{-1}$~\cite{gruhl_echo_hiding}:
 \begin{equation}
 c(n) = \mathcal{F}^{-1}\left\{\ln\left(\mathcal{F}\{y_k(n)\}\right)\right\}.
 \label{eq:cepstro}
 \end{equation}
 Para $a_b < 1$, la expansión en serie de Taylor $\ln(1 + a_b e^{-j\omega d_b}) = \sum_{m=1}^{\infty} \frac{(-1)^{m+1}}{m} a_b^m e^{-j\omega m d_b}$ muestra que el eco induce en el dominio de la quefrencia $n$ un tren de impulsos ubicado en los múltiplos del retardo $d_b$, donde el término dominante en $n = d_b$ posee amplitud proporcional a $a_b$.
 
-Con el propósito de reforzar dicho impulso frente a las variaciones propias de la señal musical, Gruhl \textit{et al.}~\cite{gruhl_echo_hiding} proponen evaluar la convolución del cepstro consigo mismo. Aplicando el teorema de convolución, la autocorrelación del cepstro $R_{cc}(n)$ se calcula directamente en el dominio espectral según la Ecuación~\eqref{eq:rcc_espectral}:
+Para reforzar dicho impulso, Gruhl \textit{et al.}~\cite{gruhl_echo_hiding} proponen evaluar la convolución del cepstro consigo mismo. Aplicando el teorema de convolución, la autocorrelación del cepstro $R_{cc}(n)$ se calcula directamente en el dominio espectral según la Ecuación~\eqref{eq:rcc_espectral}:
 \begin{equation}
 R_{cc}(n) = c_r(n) * c_r(n) = \mathcal{F}^{-1}\left\{\left(\ln\left|\mathcal{F}\{\hat{v}_k(n)\}\right|\right)^2\right\}.
 \label{eq:rcc_espectral}
 \end{equation}
-Aquí $c_r(n) = \mathcal{F}^{-1}\{\ln|\mathcal{F}\{\hat{v}_k(n)\}|\}$ es el cepstro real, la parte par de $c(n)$, que conserva los picos en los múltiplos de $d_b$; por ser par, su convolución consigo mismo es también su autocorrelación, y $\hat{v}_k(n)$ es la ventana normalizada que se define en la Sección~\ref{sec:decodificador}.
-El uso del logaritmo de la magnitud espectral $|\mathcal{F}\{\hat{v}_k(n)\}|$ en la Ecuación~\eqref{eq:rcc_espectral} evita la discontinuidad de salto de $\pm\pi$ propia del valor principal de la fase compleja, la cual introduciría ruido de banda ancha al elevar el espectro logarítmico al cuadrado. Asimismo, dado que escalar la señal por un factor $G$ suma una constante $\ln G$ al componente de quefrencia cero $c(0)$ y modifica el término cruzado $2c(0)c(d_b)$ de $R_{cc}(d_b)$, es indispensable normalizar previamente cada ventana $\hat{v}_k(n)$ a una raíz cuadrática media (RMS) de referencia constante $\mathrm{RMS}_{\mathrm{ref}}$, garantizando así que el clasificador sea invariante ante pasajes musicales fuertes o débiles.
+Aquí $c_r(n) = \mathcal{F}^{-1}\{\ln|\mathcal{F}\{\hat{v}_k(n)\}|\}$ es el cepstro real, la parte par de $c(n)$, que conserva los picos en los múltiplos de $d_b$; por ser par, su convolución consigo mismo es también su autocorrelación, y $\hat{v}_k(n)$ es la ventana recibida, normalizada como se define en la Sección~\ref{sec:decodificador}.

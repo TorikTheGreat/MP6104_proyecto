@@ -1,36 +1,15 @@
 \subsection{Codificador de eco}
 \label{sec:codificador}
 
-El codificador inserta información binaria en una señal de audio mediante
-la suma de ecos de baja amplitud. Se asigna un retardo diferente a cada
-símbolo: $d_0$ para el bit cero y $d_1$ para el bit uno. Para una ventana
-que contiene el bit $b$, el eco agregado corresponde a una copia
-atenuada y desplazada de sus muestras:
-\begin{equation}
- e_b[n]=\begin{cases}
- a_b x[n-d_b], & n-d_b\text{ pertenece a la ventana},\\
- 0, & \text{en otro caso}.
- \end{cases}
-\end{equation}
-La señal resultante se obtiene sumando el audio original y las
-contribuciones de todas las ventanas: $y[n]=x[n]+\sum_k e_{b_k}[n]$,
-donde $b_k$ es el bit de la ventana $k$.
-
 Se desarrolló un prototipo en Python y una implementación en C++17.
 El programa lee archivos de audio en formato WAV (\textit{waveform audio file format}) estéreo, con modulación por impulsos codificados (PCM) de 16 bits, permite elegir el canal de
 inserción y configurar los retardos y las atenuaciones. Los retardos, en
 microsegundos, se redondean a muestras enteras a \SI{44.1}{\kilo\hertz}, y la
 longitud de ventana es $L=K\max(d_0,d_1)$ con $K=25$: con los valores por
-defecto, $d_0=33$ y $d_1=66$ muestras y $L=1650$ muestras
+defecto, $d_0=33$ y $d_1=66$ muestras, $a_b=0.3$ y $L=1650$ muestras
 (\SI{37.4}{\milli\second}). Cada ventana se procesa mediante convolución
 explícita con la respuesta al impulso correspondiente al bit, y las
 contribuciones desplazadas se acumulan mediante solapamiento y suma en un búfer
 que empieza en ceros; el canal no seleccionado conserva sus muestras originales.
-Al escribir el WAV, con la misma cabecera que el original, se aplica saturación
+Al escribir el WAV, con el mismo formato que el original, se aplica saturación
 al intervalo de 16 bits y truncamiento hacia cero.
-
-Para verificar la implementación se utilizaron retardos de $1$ y $2$ ms
-(respectivamente $44$ y $88$ muestras) y, por tanto, $L=2200$ muestras
-($49.89$ ms). Para el mensaje $101101$ y una atenuación del \SI{20}{\percent}
-en ambos retardos, las implementaciones Python y C++ produjeron archivos con cero
-diferencias entre las muestras del canal codificado.

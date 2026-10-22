@@ -10,7 +10,6 @@ Para medir la votación se pasó la trama por un canal simulado que invierte, bo
 Canal & Sin votación & Con votación \\
 \midrule
 Sin errores & 7.00 & 7.00 \\
-\SI{1}{\percent} de bits invertidos & 5.00 & 7.00 \\
 \SI{5}{\percent} de bits invertidos & 0.15 & 5.15 \\
 \SI{10}{\percent} de bits invertidos & 0.00 & 1.75 \\
 \SI{15}{\percent} de bits invertidos & 0.00 & 0.15 \\
@@ -20,7 +19,7 @@ Sin errores & 7.00 & 7.00 \\
 \end{tabular}
 \end{table}
 
-Para probarlo con audio real, se codificaron tres metadatos en los tres fragmentos de prueba seguidos (\SI{60}{\second}, 4.77 copias del mensaje). En los seis órdenes posibles de los fragmentos, la votación recuperó los tres metadatos y la lectura directa, uno o dos. Un fragmento de \SI{20}{\second} solo tiene 1.6 copias, menos de las tres que necesita la votación, y en las grabaciones reales recuperó como mucho uno de tres metadatos.
+Para probarlo con audio real, se codificaron tres metadatos en las tres grabaciones seguidas (\SI{60}{\second}, 4.77 copias del mensaje). En los seis órdenes posibles de los fragmentos, la votación recuperó los tres metadatos y la lectura directa, uno o dos. Un fragmento de \SI{20}{\second} solo tiene 1.6 copias, menos de las tres que necesita la votación, y en las grabaciones reales recuperó como mucho uno de tres metadatos.
 
 \label{sec:seleccion}
-Los valores por defecto (\SI{750}{\micro\second}, \SI{1500}{\micro\second}, \SI{30}{\percent} y $K = 25$) se obtuvieron a partir de un barrido de 45 combinaciones de retardos y atenuación, evaluando cada una contra 25 tramos de \SI{20}{\second} tomados de cinco grabaciones, distintos de los fragmentos de prueba. De las combinaciones que recuperan al menos el \SI{90}{\percent} de los bits en cada pieza, se eligió la que recupera más metadatos en las grabaciones completas; en caso de empate, se tomó la de mejor calidad. Lo mismo se hizo con el tamaño de la ventana: con $K$ menor a 25, la recuperación baja del \SI{90}{\percent} o la calidad empeora. Con estos valores, el programa recupera entre el \SI{95.7}{\percent} y el \SI{98.3}{\percent} de los bits en los fragmentos de prueba. El detalle de este proceso se encuentra en el repositorio.
+Los valores por defecto (\SI{750}{\micro\second}, \SI{1500}{\micro\second}, \SI{30}{\percent} y $K = 25$) se obtuvieron a partir de un barrido de 45 combinaciones de retardos y atenuación, evaluando cada una contra 25 tramos de \SI{20}{\second} tomados de cinco grabaciones, distintos de los fragmentos de prueba. De las combinaciones que recuperan al menos el \SI{90}{\percent} de los bits en cada pieza, se eligió la que recupera más metadatos en las grabaciones completas; en caso de empate, se tomó la de mejor calidad. Lo mismo se hizo con el tamaño de la ventana: con $K$ menor a 25, la recuperación baja del \SI{90}{\percent} o la calidad empeora. Con estos valores, el programa final recupera entre el \SI{95.7}{\percent} y el \SI{98.3}{\percent} de los bits en las tres grabaciones. El detalle de este proceso se encuentra en el repositorio.

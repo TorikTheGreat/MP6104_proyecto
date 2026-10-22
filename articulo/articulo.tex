@@ -59,15 +59,13 @@
 
 \begin{otherlanguage}{english}
 \begin{abstract}
-This paper presents a system that hides song metadata in WAV files by echo
-hiding. Each field becomes a record protected by a cyclic redundancy check; the
-message is repeated over the file, and each window carries one bit as an echo
+This paper presents a system that hides song metadata in audio files by echo
+hiding. Each window carries one bit as an echo
 applied by convolution with overlap-add. The decoder classifies windows with the
 autocorrelation of the cepstrum and corrects bit errors by a majority vote across
-the repeated copies. Python and C++ implementations give the same output. The
+the repeated copies. The
 defaults (\SI{750}{\micro\second} and \SI{1500}{\micro\second} delays,
-\SI{30}{\percent} attenuation, \SI{26.73}{bit\per\second}) were chosen on audio
-separate from the test excerpts; with them, the program recovers
+\SI{30}{\percent} attenuation, \SI{26.73}{bit\per\second}) recover
 \SIrange{95.7}{98.3}{\percent} of the bits in \SI{20}{\second} excerpts of three
 recordings, with wideband
 perceptual evaluation of speech quality (PESQ) scores of 3.80 to 4.15. Quality falls with echo amplitude and trades off
@@ -111,16 +109,12 @@ Acoustic signal processing, audio coding, cepstral analysis, error correction co
 
 \input{secciones/resultados_recuperacion}
 
-\input{secciones/resultados_correlaciones}
-
 \input{secciones/resultados_metadatos}
 
 \section{Conclusiones}
 \input{secciones/conclusiones_calidad}
 
 \input{secciones/conclusiones_recuperacion}
-
-\input{secciones/conclusiones_correlaciones}
 
 \input{secciones/conclusiones_metadatos}
 

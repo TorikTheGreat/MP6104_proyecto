@@ -2,64 +2,11 @@
 \subsection{Tasa de recuperación y rechazo de señales sin codificar}
 \label{sec:recuperacion}
 
-La discriminación entre ventanas codificadas y sin codificar mediante $R_{cc}(n)$ se ejemplifica en la Figura~\ref{fig:cepstro_con_y_sin_eco}. Se observa que un bit~$0$ induce un impulso pronunciado en $d_0 = 33$ muestras ($\SI{750}{\micro\second}$) que supera ampliamente el umbral $U_{\mathrm{eco}} = 0.70$, mientras que un bit~$1$ concentra el pico en $d_1 = 66$ muestras ($\SI{1500}{\micro\second}$); por el contrario, la ventana sin eco permanece por debajo de $U_{\mathrm{eco}}$ en ambos retardos.
+Para caracterizar la tasa de recuperación en función de la atenuación del eco y del género musical, se evaluaron los cuatro fragmentos de prueba, codificados con bits al azar mediante el prototipo en Python. Con la configuración por defecto ($a = \SI{30}{\percent}$), la tasa media global alcanza \SI{98.31}{\percent} (\SI{97.57}{\percent} en la clásica y en el \textit{ragtime}, \SI{98.13}{\percent} en el \textit{jazz} y \SI{100.00}{\percent} en electrónica), superando el \SI{90}{\percent}. Con \SI{10}{\percent} de atenuación las tres grabaciones reales quedan cerca del \SI{80}{\percent}, mientras que la electrónica sintética, de espectro estable, se mantiene sobre el \SI{99}{\percent}.
 
-\begin{figure}[!t]
-\centering
-\includegraphics[width=\columnwidth]{cepstro_con_y_sin_eco.pdf}
-\caption{Autocorrelación del cepstro $R_{cc}(n)$ para una ventana con bit 0 ($d_0=33$), bit 1 ($d_1=66$) y sin codificar ($a = \SI{30}{\percent}$, $K=25$).}
-\label{fig:cepstro_con_y_sin_eco}
-\end{figure}
 
-Para caracterizar la tasa de recuperación en función de la atenuación del eco y del género musical, se evaluaron fragmentos de \SI{20}{\second} ($534$ ventanas con $K=25$, $d_0=33$ y $d_1=66$) de cuatro géneros: música clásica de cuerdas, \textit{ragtime} en piano acústico, \textit{jazz} y música electrónica, codificados con bits al azar mediante el prototipo en Python. La evolución de la tasa de acierto de bits se presenta en la Figura~\ref{fig:recuperacion_vs_atenuacion}. Con la configuración por defecto ($a = \SI{30}{\percent}$), la tasa media global alcanza \SI{98.31}{\percent} (\SI{97.57}{\percent} en la clásica y en el \textit{ragtime}, \SI{98.13}{\percent} en el \textit{jazz} y \SI{100.00}{\percent} en electrónica), superando la meta del \SI{90}{\percent}; con el programa final y la trama de metadatos, la recuperación es de \SIrange{95.7}{98.3}{\percent} (Sección~\ref{sec:seleccion}). Con \SI{10}{\percent} de atenuación las tres grabaciones reales quedan cerca del \SI{80}{\percent}, mientras que la electrónica sintética, de espectro estable, se mantiene sobre el \SI{99}{\percent}.
+Con $a = \SI{30}{\percent}$ y otros bits al azar, una ventana mayor reduce la tasa binaria, de \SI{66.82}{bit\per\second} con $K=10$ a \SI{26.73}{bit\per\second} con $K=25$ para $(750, 1500)\,\si{\micro\second}$, pero la recuperación no crece de forma monótona con $K$: para ese par va de \SI{95.53}{\percent} con $K=10$ a \SI{91.69}{\percent} con $K=15$ y \SI{97.94}{\percent} con $K=25$. 
 
-\begin{figure}[!t]
-\centering
-\includegraphics[width=\columnwidth]{recuperacion_vs_atenuacion.pdf}
-\caption{Tasa de recuperación de bits frente a la atenuación del eco para cuatro géneros musicales y su promedio global ($t_0=\SI{750}{\micro\second}$, $t_1=\SI{1500}{\micro\second}$, $K=25$).}
-\label{fig:recuperacion_vs_atenuacion}
-\end{figure}
 
-El efecto del factor de longitud de ventana $K$ y de los retardos $(t_0, t_1)$ sobre la tasa de transferencia y la recuperación media con $a = \SI{30}{\percent}$ se resume en la Tabla~\ref{tab:recuperacion_kr}. Una ventana mayor reduce la tasa binaria, de \SI{66.82}{bit\per\second} con $K=10$ a \SI{26.73}{bit\per\second} con $K=25$ para $(750, 1500)\,\si{\micro\second}$, pero la recuperación no crece de forma monótona con $K$: para ese par va de \SI{95.53}{\percent} con $K=10$ a \SI{91.69}{\percent} con $K=15$ y \SI{97.94}{\percent} con $K=25$. Con $K=25$, todos los pares de retardos probados superan el \SI{94}{\percent}.
+Finalmente, ante los cuatro archivos originales sin codificar, el filtro de actividad global produce exactamente cero bits emitidos y cero metadatos falsos.
 
-\begin{table}[!t]
-\caption{Tasa de transferencia y recuperación media ($a=\SI{30}{\percent}$) según los retardos y el factor de ventana $K$.}
-\label{tab:recuperacion_kr}
-\centering
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{ccccc}
-\toprule
-$(t_0, t_1)$ (\si{\micro\second}) & $K$ & $L$ (muestras) & Tasa (\si{bit\per\second}) & Recuperación (\si{\percent}) \\
-\midrule
-$(500, 750)$   & 25 & 825  & 53.45 & 95.11 \\
-$(750, 1000)$  & 25 & 1100 & 40.09 & 96.97 \\
-$(750, 1500)$  & 10 & 660  & 66.82 & 95.53 \\
-$(750, 1500)$  & 15 & 990  & 44.55 & 91.69 \\
-$(750, 1500)$  & 20 & 1320 & 33.41 & 97.98 \\
-$(750, 1500)$  & 25 & 1650 & 26.73 & 97.94 \\
-$(1000, 1500)$ & 25 & 1650 & 26.73 & 97.85 \\
-$(1500, 2000)$ & 25 & 2200 & 20.05 & 94.88 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Finalmente, en la Tabla~\ref{tab:sin_codificar} se reporta el comportamiento del decodificador ante los cuatro archivos originales sin codificar. Entre el \SI{85.58}{\percent} y el \SI{97.75}{\percent} de las ventanas individuales se descartan directamente como $\mathrm{SIN\_ECO}$, con valores medios de $\max(r_0, r_1)$ entre $0.154$ y $0.354$ (inferiores a $U_{\mathrm{eco}} = 0.70$). En los cuatro géneros, el filtro de actividad global y la verificación de redundancia cíclica (CRC) de la trama producen exactamente cero bits emitidos y cero metadatos falsos.
-
-\begin{table}[!t]
-\caption{Desempeño del decodificador ante audio sin codificar.}
-\label{tab:sin_codificar}
-\centering
-\footnotesize
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{lcccc}
-\toprule
-Género & \shortstack{Sin eco\\(\%)} &
-\shortstack{Media\\$\max(r_0,r_1)$} & Bits & Falsos \\
-\midrule
-Clásica    & 89.70 & 0.157 & 0 & 0 \\
-\textit{Ragtime}    & 85.58 & 0.354 & 0 & 0 \\
-\textit{Jazz}       & 93.45 & 0.203 & 0 & 0 \\
-Electrónica & 97.75 & 0.154 & 0 & 0 \\
-\bottomrule
-\end{tabular}
-\end{table}

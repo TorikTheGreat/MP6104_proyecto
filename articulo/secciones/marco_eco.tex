@@ -3,7 +3,7 @@
 El enmascaramiento con eco permite representar información
 binaria mediante la adición de una réplica atenuada y retardada
 de una señal de audio. Para cada bit $b\in\{0,1\}$ se define
-un sistema lineal e invariante en el tiempo (LTI) cuya
+un sistema LTI cuya
 respuesta al impulso es
 
 \begin{equation}
@@ -27,9 +27,3 @@ una cola de $d_b$ muestras adicionales, las contribuciones
 de ventanas consecutivas se acumulan mediante el método de
 solapamiento y suma, conservando la continuidad de la señal
 resultante.
-
-En la implementación desarrollada, los retardos permiten
-distinguir los bits sin modificar directamente las muestras
-mediante sustitución binaria. La amplitud del eco establece
-un compromiso entre la calidad del audio y la capacidad
-del decodificador para identificar los retardos.
