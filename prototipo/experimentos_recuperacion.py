@@ -34,11 +34,12 @@ PIEZAS = (
     ("electronica_sintetica.wav", "Electrónica"),
 )
 
-ATENUACIONES_PORCENTAJE = (10.0, 20.0, 30.0, 40.0, 50.0)
+ATENUACIONES_PORCENTAJE = (10.0, 20.0, 25.0, 30.0, 40.0, 50.0)
 FACTORES_K = (10, 15, 20, 25, 30)
 PARES_RETARDOS_US = (
     (500, 750),
     (750, 1000),
+    (750, 1500),
     (1000, 1500),
     (1500, 2000),
 )
@@ -146,9 +147,10 @@ def generar_figuras(
     largo = p.largo_ventana(p.RETARDO0_US, p.RETARDO1_US)
     v_orig = muestra_senal[:largo].astype(np.float64)
     v_bit0 = v_orig.copy()
-    v_bit0[d0:] += 0.30 * v_orig[:-d0]
+    a_def = p.amplitud_desde_porcentaje(p.ATENUACION0)
+    v_bit0[d0:] += a_def * v_orig[:-d0]
     v_bit1 = v_orig.copy()
-    v_bit1[d1:] += 0.30 * v_orig[:-d1]
+    v_bit1[d1:] += a_def * v_orig[:-d1]
 
     rcc_orig = dec.autocorrelacion_cepstro(v_orig)
     rcc_bit0 = dec.autocorrelacion_cepstro(v_bit0)
@@ -157,14 +159,14 @@ def generar_figuras(
     lags = np.arange(15, 100)
     fig, axes = plt.subplots(3, 1, figsize=(5.2, 4.4), sharex=True)
     casos = (
-        (axes[0], rcc_bit0, "a) Ventana con bit 0 codificado ($d_0 = 44$ muestras)"),
-        (axes[1], rcc_bit1, "b) Ventana con bit 1 codificado ($d_1 = 66$ muestras)"),
+        (axes[0], rcc_bit0, f"a) Ventana con bit 0 codificado ($d_0 = {d0}$ muestras)"),
+        (axes[1], rcc_bit1, f"b) Ventana con bit 1 codificado ($d_1 = {d1}$ muestras)"),
         (axes[2], rcc_orig, "c) Ventana sin codificar (sin eco)"),
     )
     for ax_i, rcc_i, titulo in casos:
         ax_i.plot(lags, rcc_i[lags], color="#1f4e78", linewidth=1.2)
-        ax_i.axvline(d0, color="#2e8b57", linestyle="--", linewidth=1.0, label="$d_0=44$")
-        ax_i.axvline(d1, color="#d95f02", linestyle="-.", linewidth=1.0, label="$d_1=66$")
+        ax_i.axvline(d0, color="#2e8b57", linestyle="--", linewidth=1.0, label=f"$d_0={d0}$")
+        ax_i.axvline(d1, color="#d95f02", linestyle="-.", linewidth=1.0, label=f"$d_1={d1}$")
         ax_i.axhline(dec.UMBRAL_ECO, color="crimson", linestyle=":", linewidth=1.0, label="Umbral eco")
         ax_i.set_title(titulo, fontsize=8.5)
         ax_i.set_ylabel("$R_{cc}(n)$", fontsize=8)
@@ -297,7 +299,7 @@ def main() -> int:
 
     escribir_csv(args.resultados / "recuperacion_atenuacion_generos.csv", filas_aten)
 
-    # 2. Barrido de factor de ventana K y pares de retardos con a = 30 % (R18, R33, R42)
+    # 2. Barrido de factor de ventana K y pares de retardos con la atenuación por defecto (R18, R33, R42)
     a_def = p.amplitud_desde_porcentaje(p.ATENUACION0)
     filas_kr: list[dict[str, object]] = []
     for t0_us, t1_us in PARES_RETARDOS_US:

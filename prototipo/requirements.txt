@@ -1,5 +1,5 @@
 numpy==2.5.3
 scipy==1.18.1
 matplotlib==3.11.2
-# PESQ (ITU-T P.862) para los experimentos (A28). Fijar la versión al instalarla.
-pesq
+# PESQ (ITU-T P.862) para los experimentos (A28). Se compila al instalarse.
+pesq==0.0.4

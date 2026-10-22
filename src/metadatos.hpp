@@ -61,9 +61,11 @@ Codificacion a_bits(const trama::Metadatos& metadatos, std::size_t n_ventanas,
                     parametros::SiNoCabe si_no_cabe = parametros::SI_NO_CABE,
                     bool repetir_mensaje = parametros::REPETIR_MENSAJE);
 
-// Registros de la copia votada (votacion.hpp), cada uno una vez. La copia se lee
-// dos veces seguidas porque es cíclica: un registro puede empezar al final y
-// seguir al principio. Vacío si no se pudo votar.
+// Registros válidos de la copia votada (votacion.hpp), cada uno una vez. La copia
+// se lee dos veces seguidas porque es cíclica: un registro puede empezar al final
+// y seguir al principio. Solo los válidos: los dañados de la copia votada no
+// agregan nada y pueden ser de categorías que no se codificaron. Vacío si no se
+// pudo votar.
 std::vector<trama::Lectura> leer_votada(const trama::Bits& bits);
 
 // Metadatos recuperados, sin duplicados, en orden de primera aparición.

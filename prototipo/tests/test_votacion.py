@@ -41,6 +41,11 @@ class PruebasPeriodo(unittest.TestCase):
     def test_sin_tres_copias_no_hay_periodo(self):
         self.assertIsNone(v.estimar_periodo(COPIA * 2 + COPIA[:500]))
 
+    def test_casi_tres_copias_no_tiene_periodo(self):
+        # Con la tolerancia, P - 4 parecería periódico; no hay tres copias de P.
+        for falta in (1, 6, 12):
+            self.assertIsNone(v.estimar_periodo((COPIA * 3)[:-falta]))
+
     def test_bits_aleatorios_no_tienen_periodo(self):
         rng = random.Random(3)
         for _ in range(5):
@@ -96,6 +101,10 @@ class PruebasDesdeBitsConVoto(unittest.TestCase):
         bits = canal(m.a_bits(SIETE, 6 * len(COPIA)).bits[333:], generador(6),
                      p_inversion=0.03)
         self.assertEqual(validos(m.desde_bits(bits)), SIETE)
+
+    def test_la_copia_votada_solo_aporta_validos(self):
+        bits = canal(m.a_bits(SIETE, 6 * len(COPIA)).bits, generador(5), p_inversion=0.05)
+        self.assertTrue(all(t == m.VALIDO for t, _, _ in m.leer_votada(bits)))
 
     def test_la_copia_votada_cuenta_una_vez(self):
         lecturas = m.leer_votada(COPIA * 3)

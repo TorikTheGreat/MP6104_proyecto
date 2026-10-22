@@ -1,0 +1,2 @@
+# generado por prototipo/vectores_aplicacion.py, semilla 2026, tipo=texto
+Título: Hola

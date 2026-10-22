@@ -7,7 +7,7 @@ Metadatos (texto UTF-8 de 1 a 255 bytes; con al menos uno, se codifica):
   --titulo T  --artista T  --autor T  --album T  --anio T  --invitado T  --productor T
 
 Enmascaramiento (los mismos al codificar y al decodificar):
-  --retardo0 US      retardo del eco del bit 0, en us (12 a 1000000)    [1000]
+  --retardo0 US      retardo del eco del bit 0, en us (12 a 1000000)    [750]
   --retardo1 US      retardo del eco del bit 1, en us (12 a 1000000)    [1500]
   --atenuacion0 P    amplitud del eco del bit 0, en % (0, 100)          [30]
   --atenuacion1 P    amplitud del eco del bit 1, en % (0, 100)          [30]

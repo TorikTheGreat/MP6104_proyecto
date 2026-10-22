@@ -16,7 +16,8 @@ std::string texto_visible(const std::string& datos) {
     std::string texto;
     for (std::size_t i = 0; i < datos.size();) {
         const std::size_t largo = utf8::largo_secuencia(datos, i);
-        if (largo > 0) {
+        const auto b = static_cast<unsigned char>(datos[i]);
+        if (largo > 0 && b >= 0x20 && b != 0x7F) {  // los caracteres de control también son "?"
             texto += datos.substr(i, largo);
             i += largo;
         } else {

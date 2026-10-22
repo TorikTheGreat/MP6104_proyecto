@@ -1,5 +1,5 @@
 archivo,genero,ventanas_totales,ventanas_sin_eco,porcentaje_sin_eco,pico_medio_rcc,pico_p95_rcc,bits_emitidos,metadatos_falsos
-clasica_vivaldi.wav,Clásica (cuerdas),534,485,90.82,0.08,1.029,0,0
-ragtime_joplin.wav,Ragtime (piano),534,480,89.89,0.252,0.971,0,0
-jazz_park.wav,Jazz,534,498,93.26,0.269,0.749,0,0
-electronica_sintetica.wav,Electrónica,534,516,96.63,0.192,0.616,0,0
+clasica_vivaldi.wav,Clásica (cuerdas),534,479,89.7,0.157,1.029,0,0
+ragtime_joplin.wav,Ragtime (piano),534,457,85.58,0.354,0.994,0,0
+jazz_park.wav,Jazz,534,499,93.45,0.203,0.793,0,0
+electronica_sintetica.wav,Electrónica,534,522,97.75,0.154,0.566,0,0

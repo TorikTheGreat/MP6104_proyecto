@@ -117,4 +117,5 @@ PRUEBA(notificacion_regla_de_los_signos_de_pregunta) {
     VERIFICAR_IGUAL(n::texto_visible("\xf4\x90\x80\x80"), "????");         // > U+10FFFF
     VERIFICAR_IGUAL(n::texto_visible("\xf0\x9f\x8e\xb5x"), "\xf0\x9f\x8e\xb5x");
     VERIFICAR_IGUAL(n::texto_visible("\x80"), "?");
+    VERIFICAR_IGUAL(n::texto_visible("a\nb\x1b[31mc\x7f"), "a?b?[31mc?");  // control
 }

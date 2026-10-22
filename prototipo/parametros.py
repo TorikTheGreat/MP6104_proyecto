@@ -86,11 +86,11 @@ def a_int16(y: float | npt.NDArray[Any]) -> int | npt.NDArray[np.int16]:
     return math.trunc(min(max(float(y) * 32768.0, -32768.0), 32767.0))
 
 
-# Valores por defecto (R17, R18), provisionales.
-RETARDO0_US = 1000   # 44 muestras
+# Valores por defecto (R17, R18), elegidos con prototipo/ajuste_parametros.py.
+RETARDO0_US = 750    # 33 muestras
 RETARDO1_US = 1500   # 66 muestras
-ATENUACION0 = 30.0  
-ATENUACION1 = 30.0  
+ATENUACION0 = 30.0
+ATENUACION1 = 30.0
 
 # Ventana = K veces el mayor retardo (R33, R42). Provisional.
 K_VENTANA = 25

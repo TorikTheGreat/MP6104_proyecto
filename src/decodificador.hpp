@@ -27,6 +27,9 @@ constexpr double UMBRAL_SILENCIO = 1e-5;
 constexpr double UMBRAL_ECO = 0.70;
 constexpr double EPSILON_ESPECTRO = 1e-6;
 constexpr double FRACCION_MIN_VENTANAS_CON_ECO = 0.25;
+// r0 y r1 a menos de esto (relativo) son un empate: en una ventana casi vacía son
+// ruido de redondeo, distinto en cada FFT, y el bit no debe depender de eso.
+constexpr double TOLERANCIA_EMPATE = 1e-9;
 
 struct DiagnosticoVentana {
     std::size_t indice = 0;
@@ -40,6 +43,9 @@ struct ResultadoDecodificacion {
     std::vector<int> bits;
     std::vector<DiagnosticoVentana> ventanas;
 };
+
+// Empate entre r0 y r1 (TOLERANCIA_EMPATE).
+bool empate(double r0, double r1);
 
 // Valor eficaz (RMS) de una ventana.
 double rms_ventana(const std::vector<double>& ventana);

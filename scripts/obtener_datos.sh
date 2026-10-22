@@ -63,6 +63,35 @@ orig_dir = Path(sys.argv[1])
 datos_dir = Path(sys.argv[2])
 FS = 44100
 
+# SHA-256 de los fragmentos versionados. Si un fragmento ya está y coincide, no se
+# toca; si falta, se genera y se avisa si no coincide (ffmpeg remuestrea distinto
+# según la versión, y los resultados del artículo se midieron con estos).
+SHA256 = {
+    "clasica_vivaldi.wav": "ea71afb288da8fa4df639d277363280ecb035294e8759964fb1a784d533e2212",
+    "vivaldi_10s.wav": "2e1f9f6afce7a33c0e5fb8c0149293b0e9efd8e963bf44ccd94c69d8b0e4fd30",
+    "ragtime_joplin.wav": "14b96e93958df204724a2adc06f47e41545562cb5631330e4473b8ba2942240e",
+    "jazz_park.wav": "b18b33f8d2b68843e79a98b87b7e5f9b2c27d96023c4ceba3e681968779a4c79",
+    "electronica_sintetica.wav": "862fd5dd665a91e4152fc1f4fa0e09a4b11ee2fe8f2306796b016325b5caf0af",
+}
+
+
+def sha256(ruta: Path) -> str:
+    import hashlib
+    return hashlib.sha256(ruta.read_bytes()).hexdigest()
+
+
+def ya_esta(destino: Path) -> bool:
+    if destino.exists() and sha256(destino) == SHA256[destino.name]:
+        print(f"Sin cambios: {destino.relative_to(datos_dir.parent)}")
+        return True
+    return False
+
+
+def comprobar(destino: Path) -> None:
+    if sha256(destino) != SHA256[destino.name]:
+        print(f"AVISO: {destino.name} no coincide con el versionado (otra versión de ffmpeg?); "
+              "los resultados pueden cambiar en décimas.")
+
 
 def escribir_wav_cd(ruta: Path, muestras: np.ndarray) -> None:
     muestras = np.asarray(muestras, dtype=np.int16)
@@ -75,12 +104,14 @@ def escribir_wav_cd(ruta: Path, muestras: np.ndarray) -> None:
     print(f"Generado: {ruta.relative_to(datos_dir.parent)} ({len(muestras)/FS:.1f} s)")
 
 
-def recortar_wav(origen: Path, destino: Path, inicio_s: float, duracion_s: float) -> bool:
+def recortar_wav(origen: Path, destino: Path, inicio_s: float, duracion_s: float) -> None:
+    if ya_esta(destino):
+        return
     if not origen.exists():
-        return False
+        sys.exit(f"ERROR: no se pudo descargar o convertir {origen.name}; {destino.name} no se generó.")
     with wave.open(str(origen), "rb") as w:
         if w.getnchannels() != 2 or w.getsampwidth() != 2 or w.getframerate() != FS:
-            return False
+            sys.exit(f"ERROR: {origen.name} no quedó en formato CD.")
         ini = int(inicio_s * FS)
         n = int(duracion_s * FS)
         if ini + n > w.getnframes():
@@ -90,7 +121,7 @@ def recortar_wav(origen: Path, destino: Path, inicio_s: float, duracion_s: float
         raw = w.readframes(n)
     datos = np.frombuffer(raw, dtype=np.int16).reshape(-1, 2)
     escribir_wav_cd(destino, datos)
-    return True
+    comprobar(destino)
 
 
 def sintetizar_respaldo(semilla: int, freqs: list[float], duracion_s: float, ruido_amp: float) -> np.ndarray:
@@ -110,36 +141,21 @@ def sintetizar_respaldo(semilla: int, freqs: list[float], duracion_s: float, rui
 
 
 # 1. Clásica (Vivaldi: versión de 20 s y versión de 10 s compatible con el módulo A)
-if not recortar_wav(orig_dir / "vivaldi_full.wav", datos_dir / "clasica_vivaldi.wav", 85.0, 20.0):
-    if not (datos_dir / "clasica_vivaldi.wav").exists():
-        escribir_wav_cd(
-            datos_dir / "clasica_vivaldi.wav",
-            sintetizar_respaldo(101, [220.0, 277.18, 329.63, 440.0, 554.37, 659.25, 880.0], 20.0, 0.12),
-        )
-
-if not recortar_wav(orig_dir / "vivaldi_full.wav", datos_dir / "vivaldi_10s.wav", 85.0, 10.0):
-    if (datos_dir / "clasica_vivaldi.wav").exists():
-        recortar_wav(datos_dir / "clasica_vivaldi.wav", datos_dir / "vivaldi_10s.wav", 0.0, 10.0)
+recortar_wav(orig_dir / "vivaldi_full.wav", datos_dir / "clasica_vivaldi.wav", 85.0, 20.0)
+recortar_wav(orig_dir / "vivaldi_full.wav", datos_dir / "vivaldi_10s.wav", 85.0, 10.0)
 
 # 2. Ragtime / Acústico (Scott Joplin - The Entertainer, 20 s)
-if not recortar_wav(orig_dir / "joplin_full.wav", datos_dir / "ragtime_joplin.wav", 5.0, 20.0):
-    if not (datos_dir / "ragtime_joplin.wav").exists():
-        escribir_wav_cd(
-            datos_dir / "ragtime_joplin.wav",
-            sintetizar_respaldo(202, [130.81, 164.81, 196.0, 261.63, 329.63, 392.0, 523.25], 20.0, 0.15),
-        )
+recortar_wav(orig_dir / "joplin_full.wav", datos_dir / "ragtime_joplin.wav", 5.0, 20.0)
 
 # 3. Jazz (Jazz at the Park, 20 s)
-if not recortar_wav(orig_dir / "jazz_full.wav", datos_dir / "jazz_park.wav", 5.0, 20.0):
-    if not (datos_dir / "jazz_park.wav").exists():
-        escribir_wav_cd(
-            datos_dir / "jazz_park.wav",
-            sintetizar_respaldo(303, [110.0, 146.83, 174.61, 220.0, 261.63, 311.13, 392.0], 20.0, 0.18),
-        )
+recortar_wav(orig_dir / "jazz_full.wav", datos_dir / "jazz_park.wav", 5.0, 20.0)
 
 # 4. Electrónica / Sintetizador (generada de forma determinista, 20 s)
-escribir_wav_cd(
-    datos_dir / "electronica_sintetica.wav",
-    sintetizar_respaldo(404, [65.41, 130.81, 196.0, 261.63, 392.0, 523.25, 783.99, 1046.5], 20.0, 0.18),
-)
+electronica = datos_dir / "electronica_sintetica.wav"
+if not ya_esta(electronica):
+    escribir_wav_cd(
+        electronica,
+        sintetizar_respaldo(404, [65.41, 130.81, 196.0, 261.63, 392.0, 523.25, 783.99, 1046.5], 20.0, 0.18),
+    )
+    comprobar(electronica)
 PY

@@ -48,13 +48,15 @@ def _largo_secuencia_utf8(datos: bytes, i: int) -> int:
 
 
 def texto_visible(datos: bytes) -> str:
-    """Cada byte que no forma parte de una secuencia UTF-8 válida se imprime como
-    "?". Se hace a mano para que C++ dé lo mismo (errors="replace" agrupa bytes)."""
+    """Cada byte que no forma parte de una secuencia UTF-8 válida, y cada carácter
+    de control (salto de línea, escape de terminal...), se imprime como "?": un
+    registro dañado no puede partir la línea ni cambiar la terminal. Se hace a mano
+    para que C++ dé lo mismo (errors="replace" agrupa bytes)."""
     partes = []
     i = 0
     while i < len(datos):
         largo = _largo_secuencia_utf8(datos, i)
-        if largo:
+        if largo and not (datos[i] < 0x20 or datos[i] == 0x7F):
             partes.append(datos[i:i + largo].decode("utf-8"))
             i += largo
         else:
