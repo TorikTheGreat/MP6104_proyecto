@@ -186,6 +186,9 @@ no son los de `datos/`; tarda unos 7 minutos y no lo corre `make experimentos`
 (`resultados/ajuste_parametros.csv`). Después, `prototipo/ajuste_canciones.py`
 cuenta los metadatos recuperados en las canciones completas con cada combinación
 que cumplió el 90 % (unos 5 minutos, `resultados/ajuste_canciones.csv`).
+`prototipo/ajuste_ventana.py` compila el programa con varios valores de K, el factor
+de la ventana, y mide lo mismo con los retardos y la atenuación por defecto (unos 15
+minutos, necesita `g++`; `resultados/ajuste_ventana.csv`).
 
 ## Limpieza
 
