@@ -182,7 +182,7 @@ def main() -> int:
            args.figuras)
     figura("calidad_vs_recuperacion", por_atenuacion, "recuperacion",
            "Recuperación de bits (%)", args.figuras, orden="atenuacion")
-    figura("calidad_vs_tasa", por_retardos, "tasa_bps", "Tasa de transferencia (bps)",
+    figura("calidad_vs_tasa", por_retardos, "tasa_bps", "Tasa de transferencia (bit/s)",
            args.figuras)
     print(f"Figuras guardadas en: {args.figuras}")
     return 0

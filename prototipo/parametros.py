@@ -92,7 +92,7 @@ RETARDO1_US = 1500   # 66 muestras
 ATENUACION0 = 30.0
 ATENUACION1 = 30.0
 
-# Ventana = K veces el mayor retardo (R33, R42). Provisional.
+# Ventana = K veces el mayor retardo (R33, R42), elegido con prototipo/ajuste_ventana.py.
 K_VENTANA = 25
 
 

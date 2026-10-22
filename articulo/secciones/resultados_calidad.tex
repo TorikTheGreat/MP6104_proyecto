@@ -1,25 +1,48 @@
 \subsection{Calidad de la señal codificada}
-Se comparó el audio original con el audio codificado para evaluar el efecto de la atenuación del eco. Se utilizó un fragmento musical estéreo en PCM de 16 bits, con frecuencia de muestreo de $44.1$ kHz, y se insertó el mensaje $101101$ en el canal izquierdo. Los retardos fueron de $44$ y $88$ muestras y la ventana tuvo una longitud de $2200$ muestras.
+\label{sec:calidad}
 
-\begin{table}[htbp]
-\caption{Resultados de calidad para diferentes atenuaciones}
-\label{tab:atenuaciones}
+Los fragmentos de prueba, de \SI{20}{\second}, son la \textit{Primavera} de
+Vivaldi (clásica de cuerdas), \textit{The Entertainer} de Joplin
+(\textit{ragtime} en piano), una grabación de \textit{jazz} para flauta y
+saxofón y una pieza electrónica
+sintética generada con una semilla fija; las fuentes y los cortes están en el
+repositorio. Para medir la calidad se codificó cada fragmento con el
+programa final, con tres metadatos repetidos en todas las ventanas del canal
+izquierdo, y se comparó con el original. La calidad perceptual se midió con la
+evaluación perceptual de la calidad de la voz (PESQ) en su versión de banda
+ancha~\cite{itu_p862,itu_p8622}, que estima la nota de opinión media de un
+oyente en una escala de 1 a 5, sobre las dos señales remuestreadas a
+\SI{16}{\kilo\hertz}. PESQ está diseñada para voz en la banda de
+\SIrange{50}{7000}{\hertz}: no evalúa el contenido más agudo, y su detector de
+actividad rechaza la pieza electrónica sintética, que por eso no tiene nota. También se midió la relación señal a ruido (SNR), tomando
+como ruido la diferencia entre la señal codificada y la original.
+
+La Figura~\ref{fig:calidad_vs_atenuacion} muestra la nota PESQ en función de la
+atenuación, con los retardos por defecto. La calidad baja de forma sostenida al
+aumentar la amplitud del eco: de 4.49--4.54 con \SI{10}{\percent} a
+3.10--3.60 con \SI{50}{\percent}. Con los valores por defecto
+($a = a_0 = a_1 = 0.3$), la nota es 4.15 en la clásica, 4.08 en el \textit{ragtime} y
+3.80 en el \textit{jazz}, el género más sensible al eco. La SNR coincide en todas
+las piezas con $-20\log_{10} a$ (\SI{10.46}{\decibel} con $a=0.3$), porque con
+todas las ventanas codificadas el eco es una copia de la señal con potencia
+$a^2$ veces la original; por eso no distingue géneros y PESQ sí.
+
+\begin{figure}[!t]
 \centering
-\begin{tabular}{ccc}
-\hline
-Atenuación & MSE & SNR (dB) \\
-\hline
-$5\,\char37{}$  & $6.5864\times10^{-7}$ & 42.581 \\
-$10\,\char37{}$ & $2.6333\times10^{-6}$ & 36.563 \\
-$15\,\char37{}$ & $5.9242\times10^{-6}$ & 33.041 \\
-$20\,\char37{}$ & $1.0531\times10^{-5}$ & 30.543 \\
-$25\,\char37{}$ & $1.6454\times10^{-5}$ & 28.605 \\
-\hline
-\end{tabular}
-\end{table}
+\includegraphics[width=\columnwidth]{calidad_vs_atenuacion.pdf}
+\caption{PESQ de banda ancha en función de la atenuación del eco, con retardos de \SI{750}{\micro\second} y \SI{1500}{\micro\second}.}
+\label{fig:calidad_vs_atenuacion}
+\end{figure}
 
-Se observa que, al aumentar la atenuación, crece el error cuadrático medio (MSE) y disminuye la relación señal-ruido (SNR). Con una atenuación del $20\,\char37{}$, el SNR fue de $30.543$ dB. La comparación entre Python y C++17 produjo cero diferencias entre las muestras PCM16 para esta configuración.
 
-También se obtuvo un valor exploratorio PESQ-WB de $4.6002$ tras remuestrear las señales a $16$ kHz. Esta métrica se diseñó para voz, por lo que no constituye una evaluación perceptual validada para el fragmento musical utilizado \cite{itu_p862}.
-
-Los indicadores MSE y SNR se calcularon sobre la grabación completa. Como solamente se insertaron seis bits, gran parte del audio permaneció sin modificar; estos valores no representan necesariamente la calidad al ocupar todas las ventanas disponibles. Quedan pendientes las pruebas con otros géneros musicales y diferentes cargas de información.
+Al relacionar la calidad con la tasa de recuperación de bits del mismo
+barrido, el coeficiente de correlación de
+Pearson es $-0.76$ en 18 puntos. Para la tasa de transferencia se variaron los retardos con
+\SI{30}{\percent} de atenuación, de modo que la tasa fue de
+\SIrange{20.05}{53.45}{bit\per\second}. Con
+los tres géneros juntos la correlación es de $-0.07$, pero por género es de
+$-0.97$ en el \textit{jazz}, $0.57$ en la clásica y $0.40$ en el \textit{ragtime},
+con solo cinco puntos cada uno: en el \textit{jazz} la calidad baja al subir la
+tasa, y en los otros dos no hay una tendencia clara. Como la tasa cambia porque
+cambian los retardos, el efecto no se puede atribuir solo al tamaño de la
+ventana.

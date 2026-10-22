@@ -128,9 +128,14 @@ constexpr std::int64_t RETARDO1_US = 1500;  // 66 muestras
 constexpr double ATENUACION0 = 30.0;
 constexpr double ATENUACION1 = 30.0;
 
-// Ventana = K veces el mayor retardo (R33, R42). Provisional: pendiente de la
-// consulta al profesor, porque el enunciado pide una elección "estricta".
+// Ventana = K veces el mayor retardo (R33, R42), elegido con
+// prototipo/ajuste_ventana.py. ECOESTEG_K_VENTANA solo lo define ese experimento,
+// que compila el programa con otros K.
+#ifdef ECOESTEG_K_VENTANA
+constexpr std::int64_t K_VENTANA = ECOESTEG_K_VENTANA;
+#else
 constexpr std::int64_t K_VENTANA = 25;
+#endif
 
 // Largo de la ventana en muestras.
 constexpr std::int64_t largo_ventana(std::int64_t t0_us, std::int64_t t1_us) {

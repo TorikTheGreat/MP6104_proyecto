@@ -1,35 +1,29 @@
 \subsection{Enmascaramiento con eco mediante sistemas LTI}
 
-El enmascaramiento con eco permite representar informacion
-binaria mediante la adicion de una replica atenuada y retardada
-de una senal de audio. Para cada bit $b\in\{0,1\}$ se define
-un sistema lineal e invariante en el tiempo (LTI) cuya
+El enmascaramiento con eco permite representar información
+binaria mediante la adición de una réplica atenuada y retardada
+de una señal de audio. Para cada bit $b\in\{0,1\}$ se define
+un sistema LTI cuya
 respuesta al impulso es
 
 \begin{equation}
-h_b[n]=\delta[n]+\alpha_b\delta[n-D_b],
+h_b[n]=\delta[n]+a_b\delta[n-d_b],
 \end{equation}
 
-donde $\alpha_b$ representa la atenuacion del eco y $D_b$
-el retardo asociado al simbolo binario. La salida del sistema
-se obtiene mediante la convolucion discreta:
+donde $a_b$ representa la amplitud del eco, igual a la atenuación configurada
+expresada como fracción, y $d_b$ el retardo en muestras asociado al símbolo
+binario. La salida del sistema se obtiene mediante la convolución discreta:
 
 \begin{equation}
 y_b[n]=x[n]*h_b[n]
-      =x[n]+\alpha_b x[n-D_b].
+      =x[n]+a_b x[n-d_b].
 \end{equation}
 
-Para insertar una secuencia de bits, la senal se divide en
+Para insertar una secuencia de bits, la señal se divide en
 ventanas de $L$ muestras. Cada ventana se convoluciona
 con la respuesta al impulso correspondiente al bit que
-se desea codificar. Debido a que la convolucion genera
-una cola de $D_b$ muestras adicionales, las contribuciones
-de ventanas consecutivas se acumulan mediante el metodo
-Overlap-Add, conservando la continuidad de la senal
+se desea codificar. Debido a que la convolución genera
+una cola de $d_b$ muestras adicionales, las contribuciones
+de ventanas consecutivas se acumulan mediante el método de
+solapamiento y suma, conservando la continuidad de la señal
 resultante.
-
-En la implementacion desarrollada, los retardos permiten
-distinguir los bits sin modificar directamente las muestras
-mediante sustitucion binaria. La amplitud del eco establece
-un compromiso entre la calidad del audio y la capacidad
-del decodificador para identificar los retardos.
