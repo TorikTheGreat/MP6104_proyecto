@@ -1,12 +1,14 @@
 """
 Corre una serie de experimentos comparando ejecuciones con y sin la votación;
 luego compila los metadatos recuperados de ambas formas, tanto con el canal 
-simulado como con las grabaciones reales de datos/ y escribe los conteos de
-cada uno en resultados/votacion.csv.
+simulado como con las grabaciones reales de datos/ (los tres fragmentos seguidos,
+en los seis órdenes posibles) y escribe los conteos de cada uno en
+resultados/votacion.csv.
 """
 
 import argparse
 import csv
+import itertools
 from pathlib import Path
 from unittest import mock
 
@@ -30,19 +32,23 @@ CANALES = [
     ("inversion", 0.10, 0.0, 0.0),
     ("borrado", 0.0, 0.005, 0.0),
     ("insercion", 0.0, 0.0, 0.005),
+    ("inversion", 0.15, 0.0, 0.0),  # al final, para no cambiar las semillas de las demás
+    ("inversion", 0.20, 0.0, 0.0),
 ]
 REALES = ["clasica_vivaldi.wav", "ragtime_joplin.wav", "jazz_park.wav"]
 TRES = {p.TITULO: "Canción de prueba", p.ARTISTA: "Banda", p.ANIO: "2026"}
 
 
-def validos(bits):
-    return sum(1 for tipo, _, _ in m.desde_bits(bits) if tipo == "valido")
+def recuperados(bits, originales):
+    """Metadatos leídos como válidos y con el mismo texto que se codificó."""
+    return sum(1 for tipo, categoria, datos in m.desde_bits(bits)
+               if tipo == "valido" and datos == originales[categoria].encode())
 
 
-def con_y_sin_voto(bits):
+def con_y_sin_voto(bits, originales):
     with mock.patch.object(p, "VOTAR_COPIAS", False):
-        sin = validos(bits)
-    return sin, validos(bits)
+        sin = recuperados(bits, originales)
+    return sin, recuperados(bits, originales)
 
 
 def fila(fuente, condicion, copias, categorias, sin, con):
@@ -56,7 +62,7 @@ def canal_simulado():
     copias = VENTANAS_3_MIN / m.bits_necesarios(SIETE)
     filas = []
     for k, (tipo, inv, bor, ins) in enumerate(CANALES):
-        resultados = [con_y_sin_voto(canal(mensaje, generador(1000 * k + s), inv, bor, ins))
+        resultados = [con_y_sin_voto(canal(mensaje, generador(1000 * k + s), inv, bor, ins), SIETE)
                       for s in range(SEMILLAS)]
         sin, con = np.mean(resultados, axis=0)
         condicion = f"{tipo} {100 * (inv or bor or ins):g} %"
@@ -66,22 +72,28 @@ def canal_simulado():
 
 
 def grabaciones_reales(datos):
+    """Los tres fragmentos seguidos (60 s), en cada uno de los seis órdenes."""
     if not all((datos / a).exists() for a in REALES):
         print("Faltan los WAV de datos/: se omiten las grabaciones reales.")
         return []
-    x = np.concatenate([er.leer_canal_izquierdo(datos / a) for a in REALES])
+    fragmentos = {a: er.leer_canal_izquierdo(datos / a) for a in REALES}
     d0, d1 = p.muestras_desde_us(p.RETARDO0_US), p.muestras_desde_us(p.RETARDO1_US)
     largo = p.largo_ventana(p.RETARDO0_US, p.RETARDO1_US)
     a = p.amplitud_desde_porcentaje(p.ATENUACION0)
-    n = x.size // largo
-    bits = m.a_bits(TRES, n).bits
-    y = er.codificar_solapamiento_y_suma(x, bits, d0, d1, a, a, largo)
-    leidos = dec.decodificar_senal(y, d0, d1, largo_ventana=largo).bits
-    acierto = 100 * np.mean(np.array(leidos) == np.array(bits))
-    sin, con = con_y_sin_voto(leidos)
-    print(f"grabaciones reales: {acierto:.2f} % de bits, sin voto {sin}/3, con voto {con}/3")
-    return [fila("grabaciones reales 60 s", f"{acierto:.2f} % de bits", n / len(m.formato().codificar(TRES)),
-                 len(TRES), sin, con)]
+    filas = []
+    for orden in itertools.permutations(REALES):
+        x = np.concatenate([fragmentos[f] for f in orden])
+        n = x.size // largo
+        bits = m.a_bits(TRES, n).bits
+        y = er.codificar_solapamiento_y_suma(x, bits, d0, d1, a, a, largo)
+        leidos = dec.decodificar_senal(y, d0, d1, largo_ventana=largo).bits
+        acierto = 100 * np.mean(np.array(leidos) == np.array(bits))
+        sin, con = con_y_sin_voto(leidos, TRES)
+        nombres = ", ".join(f.split("_")[0] for f in orden)
+        print(f"{nombres}: {acierto:.2f} % de bits, sin voto {sin}/3, con voto {con}/3")
+        filas.append(fila("grabaciones reales 60 s", f"{nombres}; {acierto:.2f} % de bits",
+                          n / len(m.formato().codificar(TRES)), len(TRES), sin, con))
+    return filas
 
 
 def main() -> int:

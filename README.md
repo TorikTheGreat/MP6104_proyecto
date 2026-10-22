@@ -183,7 +183,9 @@ make pdf            # copia el PDF de entrega a articulo/articulo.pdf
 
 `prototipo/ajuste_parametros.py` busca los valores por defecto (R18) en tramos que
 no son los de `datos/`; tarda unos 7 minutos y no lo corre `make experimentos`
-(`resultados/ajuste_parametros.csv`).
+(`resultados/ajuste_parametros.csv`). Después, `prototipo/ajuste_canciones.py`
+cuenta los metadatos recuperados en las canciones completas con cada combinación
+que cumplió el 90 % (unos 5 minutos, `resultados/ajuste_canciones.csv`).
 
 ## Limpieza
 
