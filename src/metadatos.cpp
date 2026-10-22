@@ -1,5 +1,6 @@
 #include "metadatos.hpp"
 
+#include <algorithm>
 #include <map>
 #include <set>
 #include <string>
@@ -7,6 +8,7 @@
 #include <utility>
 
 #include "trama_registros.hpp"
+#include "votacion.hpp"
 
 namespace metadatos {
 
@@ -49,8 +51,25 @@ Codificacion a_bits(const trama::Metadatos& metadatos, std::size_t n_ventanas,
     return {copia, necesarios, false};
 }
 
-std::vector<Lectura> desde_bits(const Bits& bits, bool avisos_requieren_valido) {
-    const std::vector<Lectura> lecturas = formato::leer(bits);
+std::vector<Lectura> leer_votada(const Bits& bits) {
+    const auto votada = votacion::votar_copias(bits);
+    if (!votada) return {};
+    Bits dos_veces = *votada;
+    dos_veces.insert(dos_veces.end(), votada->begin(), votada->end());
+    std::vector<Lectura> lecturas;
+    for (const auto& l : formato::leer(dos_veces))
+        if (std::find(lecturas.begin(), lecturas.end(), l) == lecturas.end())
+            lecturas.push_back(l);
+    return lecturas;
+}
+
+std::vector<Lectura> desde_bits(const Bits& bits, bool avisos_requieren_valido,
+                                bool votar_copias) {
+    std::vector<Lectura> lecturas = formato::leer(bits);
+    if (votar_copias) {
+        const auto votadas = leer_votada(bits);
+        lecturas.insert(lecturas.end(), votadas.begin(), votadas.end());
+    }
 
     // Textos válidos por categoría con sus copias, en orden de aparición.
     std::map<int, std::vector<std::pair<std::string, int>>> copias_validas;

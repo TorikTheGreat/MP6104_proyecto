@@ -1,0 +1,9 @@
+fuente,condicion,copias,categorias,validas_sin_voto,validas_con_voto
+canal simulado,inversion 0 %,4.81,7,7.0,7.0
+canal simulado,inversion 1 %,4.81,7,5.0,7.0
+canal simulado,inversion 2 %,4.81,7,2.05,6.85
+canal simulado,inversion 5 %,4.81,7,0.15,5.15
+canal simulado,inversion 10 %,4.81,7,0.0,1.75
+canal simulado,borrado 0.5 %,4.81,7,6.7,6.7
+canal simulado,insercion 0.5 %,4.81,7,6.6,6.6
+grabaciones reales 60 s,96.07 % de bits,4.77,3,2,3

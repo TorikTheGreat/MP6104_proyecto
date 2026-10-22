@@ -12,6 +12,7 @@ from types import ModuleType
 
 import parametros as p
 import trama_registros
+import votacion
 from trama import DANADO, DESCONOCIDO, VALIDO, Bits, Lectura, Metadatos
 
 FORMATOS: dict[str, ModuleType] = {"registros": trama_registros}
@@ -65,6 +66,20 @@ def a_bits(metadatos: Metadatos, n_ventanas: int) -> Codificacion:
     return Codificacion(bits, len(copia), False)
 
 
+def leer_votada(bits: Sequence[int]) -> list[Lectura]:
+    """Registros de la copia votada, cada uno una vez. La copia se lee dos veces
+    seguidas porque es cíclica: un registro puede empezar al final y seguir al
+    principio."""
+    votada = votacion.votar_copias(bits)
+    if votada is None:
+        return []
+    lecturas: list[Lectura] = []
+    for lectura in formato().leer(votada + votada):
+        if lectura not in lecturas:
+            lecturas.append(lectura)
+    return lecturas
+
+
 def desde_bits(bits: Iterable[int]) -> list[Lectura]:
     """Metadatos recuperados, sin duplicados, en orden de primera aparición.
 
@@ -76,8 +91,13 @@ def desde_bits(bits: Iterable[int]) -> list[Lectura]:
       categoría tiene una copia válida (es una copia dañada de algo ya reportado).
     Con AVISOS_REQUIEREN_VALIDO, desconocidos y dañados solo se reportan si hubo
     algún registro válido: un archivo sin codificar no produce avisos.
+    Con VOTAR_COPIAS, los registros de la copia votada (votacion.py) se suman como
+    una copia más.
     """
+    bits = list(bits)
     lecturas = formato().leer(bits)
+    if p.VOTAR_COPIAS:
+        lecturas += leer_votada(bits)
 
     copias_validas: dict[int, Counter[bytes]] = {}  # textos por categoría, en orden
     for tipo, categoria, datos in lecturas:

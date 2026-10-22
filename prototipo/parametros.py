@@ -126,3 +126,7 @@ FORMATO_TRAMA = "registros"
 # R50 True -> desconocidos y dañados solo se avisan si hubo algún registro
 # válido (un archivo sin codificar no da avisos); False -> se avisan siempre.
 AVISOS_REQUIEREN_VALIDO = True
+
+# O2 True -> al decodificar se vota bit a bit entre las copias repetidas del
+# mensaje (votacion.py) y la copia votada se lee como una copia más.
+VOTAR_COPIAS = True
